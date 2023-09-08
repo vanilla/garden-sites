@@ -126,7 +126,7 @@ class LocalSitesTest extends BaseSitesTestCase
             "siteID": 101,
             "baseUrl": "http:\/\/vanilla.localhost\/valid",
             "clusterID": "cl00000",
-            "configPath": "\/Users\/acharron\/git\/vnla\/garden-sites\/tests\/configs\/vanilla.localhost\/valid.php"
+            "configPath": "\/vanilla.localhost\/valid.php"
         }
         JSON;
 

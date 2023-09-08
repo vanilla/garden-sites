@@ -75,6 +75,7 @@ class LocalSiteProvider extends SiteProvider
                 }
 
                 $siteRecord = new SiteRecord($siteID, $accountID, $clusterID, $baseUrl);
+                $configPath = str_replace($this->siteConfigFsBasePath, "", $configPath);
                 $siteRecord->setExtra("configPath", $configPath);
 
                 $siteRecordsBySiteID[$siteRecord->getSiteID()] = $siteRecord;
@@ -94,7 +95,7 @@ class LocalSiteProvider extends SiteProvider
 
         $configPath = $siteRecord->getExtra("configPath") ?? "";
 
-        $localSite = new LocalSite($configPath, $siteRecord, $this, new CurlHandler());
+        $localSite = new LocalSite($this->siteConfigFsBasePath . $configPath, $siteRecord, $this, new CurlHandler());
         return $localSite;
     }
 
