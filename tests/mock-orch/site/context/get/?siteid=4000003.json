@@ -1,0 +1,35 @@
+{
+    "isHomepage": false,
+    "endpoint": "site/context/get",
+    "method": "GET",
+    "provider": {
+        "name": "orch.vanilla.localhost",
+        "address": "0.0.0.0",
+        "version": "0.0"
+    },
+    "context": {
+        "site": {
+            "siteid": 40000003,
+            "accountid": 60000,
+            "name": "yul1.vanillatesting.com",
+            "state": "active",
+            "cluster": "cl40011",
+            "database": "db1",
+            "domain": "yul1.vanilla.community",
+            "baseurl": "yul1.vanilla.community"
+        },
+        "config": {
+            "allsite": {
+                "havethis": "everyone"
+            },
+            "APIv2": {
+                "SystemAccessToken": "systemaccess"
+            },
+            "ReplaceByCluster": [1, 2, 3],
+            "MergeWithCluster": {
+                "a": 1,
+                "c": 2
+            }
+        }
+    }
+}

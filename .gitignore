@@ -1,0 +1,11 @@
+/vendor/
+.phpunit.result.cache
+npm-debug.log
+yarn-error.log
+/.idea
+/.vscode
+/node_modules
+phpunit.xml
+.DS_Store
+# This is a library so no lock file.
+composer.lock

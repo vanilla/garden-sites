@@ -1,0 +1,34 @@
+{
+    "name": "vanilla/garden-sites",
+    "description": "Package containing interfaces and implementations for local and hosted vanilla forums sites management and definitions.",
+    "type": "library",
+    "require-dev": {
+        "phpunit/phpunit": "^9.0",
+        "vimeo/psalm": "^5.14",
+        "symfony/cache": "^5.4"
+    },
+    "license": "Proprietary",
+    "autoload": {
+        "psr-4": {
+            "Garden\\Sites\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Garden\\Sites\\Tests\\": "tests/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Adam Charron",
+            "email": "adam@charrondev.com"
+        }
+    ],
+    "require": {
+        "vanilla/garden-http": "^2.6",
+        "ext-json": "*",
+        "php": ">=7.4",
+        "vanilla/garden-utils": "^1.0.1",
+        "symfony/cache-contracts": "^2.5"
+    }
+}

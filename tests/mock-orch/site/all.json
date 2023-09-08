@@ -1,0 +1,97 @@
+{
+    "isHomepage": false,
+    "endpoint": "site/all",
+    "method": "GET",
+    "provider": {
+        "name": "orch.vanilla.localhost",
+        "address": "0.0.0.0",
+        "version": "0.0"
+    },
+    "resultsize": 6,
+    "sites": [
+        {
+            "siteid": 100,
+            "accountid": 100,
+            "name": "site1.vanillatesting.com",
+            "state": "active",
+            "cluster": "cl10001",
+            "database": "dbe1",
+            "domain": null,
+            "baseurl": "site1.vanillatesting.com",
+            "dateinserted": "2020-01-01 00:00:00",
+            "migratable": 0,
+            "multisiteid": null,
+            "ismultisite": false
+        },
+        {
+            "siteid": 4000001,
+            "accountid": 50000,
+            "name": "test-hub.vanillatesting.com",
+            "state": "active",
+            "cluster": "cl10001",
+            "database": "db1",
+            "domain": "test.vanilla.community",
+            "baseurl": "test.vanilla.community/hub",
+            "dateinserted": "2020-01-01 00:00:00",
+            "migratable": 0,
+            "multisiteid": 100,
+            "ismultisite": true
+        },
+        {
+            "siteid": 4000002,
+            "accountid": 50000,
+            "name": "test-node1.vanillatesting.com",
+            "state": "active",
+            "cluster": "cl10001",
+            "database": "db1",
+            "domain": "test.vanilla.community",
+            "baseurl": "test.vanilla.community/node1",
+            "dateinserted": "2020-01-01 00:00:00",
+            "migratable": 0,
+            "multisiteid": 100,
+            "ismultisite": true
+        },
+        {
+            "siteid": 4000003,
+            "accountid": 60000,
+            "name": "yul1.vanillatesting.com",
+            "state": "active",
+            "cluster": "cl40011",
+            "database": "db1",
+            "domain": "yul1.vanilla.community",
+            "baseurl": "yul1.vanilla.community",
+            "dateinserted": "2020-01-01 00:00:00",
+            "migratable": 0,
+            "multisiteid": null,
+            "ismultisite": false
+        },
+        {
+            "siteid": 4000004,
+            "accountid": 60000,
+            "name": "ams1.vanillatesting.com",
+            "state": "active",
+            "cluster": "cl40015",
+            "database": "db1",
+            "domain": "ams1.vanilla.community",
+            "baseurl": "ams1.vanilla.community",
+            "dateinserted": "2020-01-01 00:00:00",
+            "migratable": 0,
+            "multisiteid": null,
+            "ismultisite": false
+        },
+        {
+            "siteid": 4000005,
+            "accountid": 70000,
+            "name": "no-system.vanillatesting.com",
+            "state": "active",
+            "cluster": "cl10001",
+            "database": "db1",
+            "domain": "no-system.vanilla.community",
+            "baseurl": "no-system.vanilla.community",
+            "dateinserted": "2020-01-01 00:00:00",
+            "migratable": 0,
+            "multisiteid": null,
+            "ismultisite": false
+        }
+    ]
+}

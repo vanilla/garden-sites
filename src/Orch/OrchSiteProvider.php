@@ -1,0 +1,148 @@
+<?php
+/**
+ * @copyright 2009-2023 Vanilla Forums Inc.
+ * @license Proprietary
+ */
+
+namespace Garden\Sites\Orch;
+
+use Garden\Http\CurlHandler;
+use Garden\Sites\Clients\OrchHttpClient;
+use Garden\Sites\Exceptions\ConfigLoadingException;
+use Garden\Sites\SiteProvider;
+use Garden\Sites\SiteRecord;
+use Garden\Utils\ArrayUtils;
+use Symfony\Contracts\Cache\ItemInterface;
+
+/**
+ * @extends SiteProvider<OrchSite, OrchCluster>
+ */
+class OrchSiteProvider extends SiteProvider
+{
+    private OrchHttpClient $orchHttpClient;
+
+    /**
+     * @param OrchHttpClient $orchHttpClient
+     */
+    public function __construct(OrchHttpClient $orchHttpClient, string $region, string $network)
+    {
+        parent::__construct($region, $network);
+        $this->orchHttpClient = $orchHttpClient;
+        $this->orchHttpClient->setUserAgent($this->getUserAgent());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function loadAllSiteRecords(): array
+    {
+        $apiSites = $this->orchHttpClient->get("/site/all")->getBody()["sites"];
+
+        $siteRecordsBySiteID = [];
+        foreach ($apiSites as $apiSite) {
+            $site = new SiteRecord(
+                $apiSite["siteid"],
+                $apiSite["accountid"],
+                $apiSite["cluster"],
+                "https://" . $apiSite["baseurl"],
+            );
+            $siteRecordsBySiteID[$site->getSiteID()] = $site;
+        }
+        return $siteRecordsBySiteID;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getSite(int $siteID): OrchSite
+    {
+        $siteRecord = $this->getSiteRecord($siteID);
+        $site = new OrchSite($siteRecord, $this, new CurlHandler());
+        return $site;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function loadAllClusters(): array
+    {
+        $apiClusters = $this->orchHttpClient->get("/cluster/all")->getBody()["clusters"];
+
+        $result = [];
+        foreach ($apiClusters as $apiCluster) {
+            $cluster = new OrchCluster(
+                $apiCluster["ClusterID"],
+                $apiCluster["CloudZone"],
+                $apiCluster["Network"],
+                $apiCluster["ApiToken"],
+            );
+            $result[$cluster->getClusterID()] = $cluster;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Fetch a cluster's configuration. 5 minute cache time applied.
+     *
+     * @param OrchCluster $cluster
+     *
+     * @return array
+     */
+    public function getClusterConfig(OrchCluster $cluster): array
+    {
+        $cacheKey = "orch.cluster.config.{$cluster->getClusterID()}";
+        $clusterConfig = $this->cache->get($cacheKey, function (ItemInterface $item) use ($cluster) {
+            $item->expiresAfter(60 * 5); // 5 minute cache time.
+
+            $response = $cluster->getClient()->get("/cluster/configuration");
+            return $response->getBody()["configuration"] ?? [];
+        });
+        return $clusterConfig;
+    }
+
+    /**
+     * Fetch a site config. 1 minute cache time is applied.
+     *
+     * @param int $siteID The siteID.
+     *
+     * @return array The config.
+     */
+    public function getSiteConfig(int $siteID): array
+    {
+        $cacheKey = "orchSites.config.{$siteID}";
+        $config = $this->cache->get($cacheKey, function (ItemInterface $item) use ($siteID) {
+            $item->expiresAfter(60); // 1 minute cache time.
+
+            $response = $this->orchHttpClient->get("/site/context/get", [
+                "siteid" => $siteID,
+            ]);
+            $responseBody = $response->getBody();
+
+            $config = $responseBody["context"]["config"] ?? null;
+
+            if (empty($config)) {
+                throw new ConfigLoadingException("Orchestration failed to return a site config for site {$siteID}");
+            }
+
+            // Kludge. Why isn't this injected into the site config?
+            $kludgedEsSecret = $responseBody["context"]["site"]["secret"] ?? null;
+            if (!empty($kludgedEsSecret)) {
+                ArrayUtils::setByPath("Inf.SearchApi.Secret", $config, $kludgedEsSecret);
+            }
+
+            return $config;
+        });
+
+        return $config;
+    }
+
+    /**
+     * @return OrchHttpClient
+     * @internal For testing only.
+     */
+    public function getOrchHttpClient(): OrchHttpClient
+    {
+        return $this->orchHttpClient;
+    }
+}

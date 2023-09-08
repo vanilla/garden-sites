@@ -1,0 +1,35 @@
+{
+    "isHomepage": false,
+    "endpoint": "site/context/get",
+    "method": "GET",
+    "provider": {
+        "name": "orch.vanilla.localhost",
+        "address": "0.0.0.0",
+        "version": "0.0"
+    },
+    "context": {
+        "site":{
+            "siteid": 100,
+            "accountid": 100,
+            "name": "site1.vanillatesting.com",
+            "state": "active",
+            "cluster": "cl10001",
+            "database": "dbe1",
+            "domain": null,
+            "baseurl": "site1.vanillatesting.com"
+        },
+        "config": {
+            "allsite": {
+                "havethis": "everyone"
+            },
+            "APIv2": {
+                "SystemAccessToken": "systemaccess"
+            },
+            "ReplaceByCluster": [1, 2, 3],
+            "MergeWithCluster": {
+                "a": 1,
+                "c": 2
+            }
+        }
+    }
+}

@@ -1,0 +1,66 @@
+{
+    "isHomepage": false,
+    "endpoint": "cluster/all",
+    "method": "GET",
+    "provider": {
+        "name": "orch.vanilla.localhost",
+        "address": "0.0.0.0",
+        "version": "0.0"
+    },
+    "clusters": [
+        {
+            "ClusterID": "cl10001",
+            "Name": "Ops Dev Cluster",
+            "Tag": "Ops Dev Cluster",
+            "Zone": "sahara",
+            "Allocation": "private",
+            "State": "active",
+            "Class": "test",
+            "HasRoutingNodes": 0,
+            "Prime": 0,
+            "ApiToken": "cl10001-token",
+            "CloudZone": "mtl",
+            "DateInserted": "2020-01-01 00:00:00",
+            "Remarks": null,
+            "Network": "development",
+            "LogicMonitorGroupID": 0,
+            "Sites": 4
+        },
+        {
+            "ClusterID": "cl40011",
+            "Name": "MTL Prio 1",
+            "Tag": "Priority 1",
+            "Zone": "sahara",
+            "Allocation": "public",
+            "State": "active",
+            "Class": "priority",
+            "HasRoutingNodes": 0,
+            "Prime": 1,
+            "ApiToken": "cl40011-token",
+            "CloudZone": "mtl",
+            "DateInserted": "2020-01-01 00:00:00",
+            "Remarks": null,
+            "Network": "production",
+            "LogicMonitorGroupID": 5,
+            "Sites": 1
+        },
+        {
+            "ClusterID": "cl40015",
+            "Name": "AMS PRIO 1",
+            "Tag": "Priority 1",
+            "Zone": "ams-1",
+            "Allocation": "public",
+            "State": "active",
+            "Class": "priority",
+            "HasRoutingNodes": 0,
+            "Prime": 0,
+            "ApiToken": "cl40015",
+            "CloudZone": "ams-1",
+            "DateInserted": "2020-01-01 00:00:00",
+            "Remarks": null,
+            "Network": "production",
+            "LogicMonitorGroupID": 5,
+            "Sites": 1
+        }
+    ]
+}
