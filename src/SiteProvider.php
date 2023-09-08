@@ -92,7 +92,7 @@ abstract class SiteProvider
             return $loadedSiteRecords;
         });
 
-        $filteredClusters = $this->getClusters($this->region, $this->network);
+        $filteredClusters = $this->getClusters();
         $validClusterIDs = [];
         foreach ($filteredClusters as $filteredCluster) {
             $validClusterIDs[] = $filteredCluster->getClusterID();
