@@ -157,21 +157,6 @@ abstract class SiteProvider
     abstract protected function loadAllClusters(): array;
 
     /**
-     * @return array<string, TCluster>
-     */
-    public function getAllClusters(): array
-    {
-        $cacheKey = "allClusterRecords." . str_replace("\\", "_", get_class($this));
-        $result = $this->cache->get($cacheKey, function (ItemInterface $item) {
-            $item->expiresAfter(60); // Short cache duration.
-            $loadedClusters = $this->loadAllClusters();
-
-            return $loadedClusters;
-        });
-        return $result;
-    }
-
-    /**
      * Get a cluster by its ID.
      *
      * @param string $clusterID
@@ -182,7 +167,7 @@ abstract class SiteProvider
      */
     public function getCluster(string $clusterID): Cluster
     {
-        $clusters = $this->getAllClusters();
+        $clusters = $this->getClusters();
         $cluster = $clusters[$clusterID] ?? null;
         if ($cluster === null) {
             throw new ClusterNotFoundException($clusterID);
@@ -192,18 +177,22 @@ abstract class SiteProvider
     }
 
     /**
-     * Get a list of clusters filtered by network and region.
-     *
-     * @param string $region
-     * @param string $network
+     * Get a list of clusters.
      *
      * @return array<string, TCluster>
      */
-    protected function getClusters(string $region, string $network): array
+    public function getClusters(): array
     {
-        $allClusters = $this->getAllClusters();
-        $filteredClusters = array_filter($allClusters, function (Cluster $cluster) use ($region, $network) {
-            return $cluster->getNetwork() === $network && $cluster->getRegion() === $region;
+        $cacheKey = "allClusterRecords." . str_replace("\\", "_", get_class($this));
+        $allClusters = $this->cache->get($cacheKey, function (ItemInterface $item) {
+            $item->expiresAfter(60); // Short cache duration.
+            $loadedClusters = $this->loadAllClusters();
+
+            return $loadedClusters;
+        });
+
+        $filteredClusters = array_filter($allClusters, function (Cluster $cluster) {
+            return $cluster->getNetwork() === $this->network && $cluster->getRegion() === $this->region;
         });
 
         return $filteredClusters;

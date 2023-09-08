@@ -8,7 +8,7 @@
         "version": "0.0"
     },
     "context": {
-        "site":{
+        "site": {
             "siteid": 100,
             "accountid": 100,
             "name": "site1.vanillatesting.com",
