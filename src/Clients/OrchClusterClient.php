@@ -8,8 +8,10 @@ namespace Garden\Sites\Clients;
 
 use Garden\Http\HttpClient;
 use Garden\Sites\Orch\OrchCluster;
-use Illuminate\Support\Facades\Http;
 
+/**
+ * HTTP client for making requests to a cluster's API.
+ */
 class OrchClusterClient extends HttpClient
 {
     public function __construct(OrchCluster $cluster)

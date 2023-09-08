@@ -8,7 +8,6 @@ namespace Garden\Sites\Tests;
 
 use Garden\Http\HttpResponse;
 use Garden\Http\Mocks\MockHttpHandler;
-use Garden\Sites\Clients\SiteHttpClient;
 use Garden\Sites\Exceptions\BadApiCredentialsException;
 use Garden\Sites\Exceptions\ClusterNotFoundException;
 use Garden\Sites\Exceptions\SiteNotFoundException;
@@ -16,13 +15,23 @@ use Garden\Sites\SiteProvider;
 use Garden\Sites\Tests\Fixtures\ExpectedSite;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Base tests case with common tests between different providers.
+ */
 abstract class BaseSitesTestCase extends TestCase
 {
     const SID_INVALID = 142141;
 
+    /**
+     * Create a configured site provider instance.
+     *
+     * @return SiteProvider
+     */
     abstract public function siteProvider(): SiteProvider;
 
     /**
+     *  Provide expected sites to various tests.
+     *
      * @return iterable<array-key, array<ExpectedSite>>
      */
     abstract public function provideExpectedSites(): iterable;
@@ -94,6 +103,7 @@ abstract class BaseSitesTestCase extends TestCase
         $provider->setRegionAndNetwork($expectedSite->expectedRegion, $expectedSite->expectedNetwork);
         $site = $provider->getSite($expectedSite->getSiteID());
         $expectedSite->assertMatchesSite($site);
+        $expectedSite->assertConfigsMatchSite($site);
 
         // Sites have a cluster
         $cluster = $site->getCluster();

@@ -17,6 +17,13 @@ use Garden\Utils\ArrayUtils;
  */
 class OrchSite extends Site
 {
+    /**
+     * Constructor.
+     *
+     * @param SiteRecord $siteRecord
+     * @param OrchSiteProvider $siteProvider
+     * @param HttpHandlerInterface $httpHandler
+     */
     public function __construct(
         SiteRecord $siteRecord,
         OrchSiteProvider $siteProvider,

@@ -6,6 +6,8 @@
 
 namespace Garden\Sites;
 
+use Garden\Sites\Orch\OrchCluster;
+
 /**
  * Class representing a cluster of sites.
  */
@@ -41,9 +43,9 @@ class Cluster
      * Get a string identifying the region that the cluster belongs to. This is normally an acronym for some geo-located datacenter.
      *
      * Examples:
-     * - mtl
-     * - sjc / sfo
-     * - ams
+     * - mtl - {@link OrchCluster::REGION_YUL1}
+     * - sjc / sfo - {@link OrchCluster::REGION_SJC}
+     * - ams - {@link OrchCluster::REGION_AMS1}
      *
      * @return string
      */
@@ -56,8 +58,8 @@ class Cluster
      * Get a string identifying the type of network the cluster runs on.
      *
      * Examples
-     * - production
-     * - development
+     * - production {@link OrchCluster::NETWORK_PRODUCTION}
+     * - development {@link OrchCluster::NETWORK_DEVELOPMENT}
      * - localhost
      *
      * @return string

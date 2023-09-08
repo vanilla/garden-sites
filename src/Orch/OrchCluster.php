@@ -9,6 +9,9 @@ namespace Garden\Sites\Orch;
 use Garden\Sites\Clients\OrchClusterClient;
 use Garden\Sites\Cluster;
 
+/**
+ * Implementation of a cluster loaded from orchestration.
+ */
 class OrchCluster extends Cluster
 {
     public const REGION_YUL1 = "mtl";
@@ -21,6 +24,14 @@ class OrchCluster extends Cluster
     /** @var string Secret used in communication with the cluster. */
     private string $secret;
 
+    /**
+     * Constructor.
+     *
+     * @param string $clusterID
+     * @param string $region
+     * @param string $network
+     * @param string $secret
+     */
     public function __construct(string $clusterID, string $region, string $network, string $secret)
     {
         $this->secret = $secret;

@@ -10,6 +10,9 @@ use Garden\Sites\Site;
 use Garden\Sites\SiteRecord;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class holding expecations about sites from a provider.
+ */
 class ExpectedSite extends SiteRecord
 {
     private array $expectedConfigs;
@@ -19,15 +22,17 @@ class ExpectedSite extends SiteRecord
     public string $expectedRegion = "localhost";
     public string $expectedNetwork = "localhost";
 
+    /**
+     * @param int $siteID
+     * @param int $accountID
+     * @param string $clusterID
+     * @param string $baseUrl
+     * @param array $expectedConfigs
+     */
     public function __construct(int $siteID, int $accountID, string $clusterID, string $baseUrl, array $expectedConfigs)
     {
         parent::__construct($siteID, $accountID, $clusterID, $baseUrl);
         $this->expectedConfigs = $expectedConfigs;
-    }
-
-    public function getExpectedConfigs(): array
-    {
-        return $this->expectedConfigs;
     }
 
     /**
@@ -39,6 +44,11 @@ class ExpectedSite extends SiteRecord
         return $this;
     }
 
+    /**
+     * @param string $region
+     * @param string $network
+     * @return $this
+     */
     public function expectNetworkAndRegion(string $region, string $network): self
     {
         $this->expectedRegion = $region;
@@ -46,6 +56,10 @@ class ExpectedSite extends SiteRecord
         return $this;
     }
 
+    /**
+     * @param Site $site
+     * @return void
+     */
     public function assertMatchesSite(Site $site): void
     {
         $suffix = "to match expected site '{$this->getBaseUrl()}'";
@@ -55,6 +69,10 @@ class ExpectedSite extends SiteRecord
         TestCase::assertEquals($this->getBaseUrl(), $site->getBaseUrl(), "Expected baseUrl {$suffix}.");
     }
 
+    /**
+     * @param Site $site
+     * @return void
+     */
     public function assertConfigsMatchSite(Site $site): void
     {
         foreach ($this->expectedConfigs as $key => $value) {

@@ -48,9 +48,27 @@ The orch site provider loads sites and clusters from a remote orchestration http
 use Garden\Sites\Clients\OrchHttpClient;
 use Garden\Sites\Orch\OrchSiteProvider;
 use Garden\Sites\Orch\OrchCluster;
+use Symfony\Component\Cache\Adapter\MemcachedAdapter;
+use Symfony\Component\Cache\Adapter\RedisAdapter;
+use Symfony\Contracts\Cache\CacheInterface;
 
 $orchHttpClient = new OrchHttpClient("https://orch.vanilla.localhost", "access-token-here");
 $siteProvider = new OrchSiteProvider($orchHttpClient, OrchCluster::REGION_AMS1, OrchCluster::NETWORK_PRODUCTION);
+
+// It is highly recommended to set a user-agent for network requests.
+$siteProvider->setUserAgent("my-service:1.0");
+
+/**
+ * Site providers do various caching of results. By default an in-memory cache is used, but especially with an orch-client
+ * it is recommended to configure a persistent cache like memcached or redis.
+ * Caches must implement {@link CacheInterface}
+ */
+
+$cache = new RedisAdapter(/** Configuration here. */);
+// or
+$cache = new MemcachedAdapter(/** Configuration here. */);
+
+$siteProvider->setCache($cache);
 
 # Region/network can be changed later
 $siteProvider->setRegionAndNetwork(OrchCluster::REGION_YUL1, OrchCluster::NETWORK_DEVELOPMENT);

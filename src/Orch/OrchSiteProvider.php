@@ -28,6 +28,16 @@ class OrchSiteProvider extends SiteProvider
     {
         parent::__construct($region, $network);
         $this->orchHttpClient = $orchHttpClient;
+    }
+
+    /**
+     * Overridden to set the user agent.
+     *
+     * @param string $userAgent
+     */
+    public function setUserAgent(string $userAgent): void
+    {
+        parent::setUserAgent($userAgent);
         $this->orchHttpClient->setUserAgent($this->getUserAgent());
     }
 

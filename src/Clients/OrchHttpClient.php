@@ -13,6 +13,10 @@ use Garden\Http\HttpClient;
  */
 class OrchHttpClient extends HttpClient
 {
+    /**
+     * @param string $orchBaseUrl
+     * @param string $accessToken
+     */
     public function __construct(string $orchBaseUrl, string $accessToken)
     {
         parent::__construct($orchBaseUrl);

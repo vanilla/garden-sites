@@ -8,6 +8,9 @@ namespace Garden\Sites\Exceptions;
 
 use Garden\Utils\ContextException;
 
+/**
+ * Exception thrown when a site could not be loaded.
+ */
 class SiteNotFoundException extends ContextException
 {
     public function __construct(int $siteID)

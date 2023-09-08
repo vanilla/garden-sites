@@ -11,24 +11,34 @@ use Garden\Http\HttpResponse;
 use Garden\Http\Mocks\MockHttpHandler;
 use Garden\Sites\Clients\OrchHttpClient;
 use Garden\Sites\FileUtils;
-use Garden\Sites\Local\LocalSite;
 use Garden\Sites\Orch\OrchCluster;
 use Garden\Sites\Orch\OrchSiteProvider;
-use Garden\Sites\SiteProvider;
 use Garden\Sites\Tests\Fixtures\ExpectedSite;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
+/**
+ * Tests for sites loaded from orchestration.
+ */
 class OrchSitesTest extends BaseSitesTestCase
 {
     private ?MockHttpHandler $mockHandler = null;
 
+    /**
+     * @inheritDoc
+     */
     protected function setUp(): void
     {
         parent::setUp();
         $this->mockHandler = new MockHttpHandler();
     }
 
+    /**
+     * Create a mocked {@link OrchSiteProvider}.
+     *
+     * Network requests are mocked from /tests/mock-orch
+     *
+     * @return OrchSiteProvider
+     */
     public function siteProvider(): OrchSiteProvider
     {
         $baseUrl = "https://orch.vanilla.localhost";
@@ -56,6 +66,8 @@ class OrchSitesTest extends BaseSitesTestCase
     }
 
     /**
+     * Generate a set of expected sites.
+     *
      * @return array<ExpectedSite>
      */
     public function expectedSites(): array
@@ -116,6 +128,9 @@ class OrchSitesTest extends BaseSitesTestCase
         ];
     }
 
+    /**
+     * @inheritDoc
+     */
     public function provideExpectedSites(): iterable
     {
         foreach ($this->expectedSites() as $expectedSite) {
@@ -123,6 +138,9 @@ class OrchSitesTest extends BaseSitesTestCase
         }
     }
 
+    /**
+     * @return iterable
+     */
     public function provideSiteFiltering(): iterable
     {
         yield "yul1 dev" => [
@@ -135,6 +153,8 @@ class OrchSitesTest extends BaseSitesTestCase
     }
 
     /**
+     * Test that sites are properly filtered by network and region.
+     *
      * @param string $region
      * @param string $network
      * @param array $expectedSiteIDs
@@ -159,6 +179,11 @@ class OrchSitesTest extends BaseSitesTestCase
         }
     }
 
+    /**
+     * Test caching and error's thrown if sites fail to load from orchestration.
+     *
+     * @return void
+     */
     public function testLoadSitesError()
     {
         $provider = $this->siteProvider();
@@ -177,6 +202,11 @@ class OrchSitesTest extends BaseSitesTestCase
         $provider->getSite(100);
     }
 
+    /**
+     * Test caching and error's thrown if clusters fail to load from orchestration.
+     *
+     * @return void
+     */
     public function testLoadClusters()
     {
         $provider = $this->siteProvider();
@@ -193,5 +223,32 @@ class OrchSitesTest extends BaseSitesTestCase
         $this->expectExceptionCode(404);
         $provider->setCache(new ArrayAdapter());
         $provider->getCluster("cl10001");
+    }
+
+    /**
+     * Test that user agent is applied to our http client.
+     */
+    public function testUserAgent()
+    {
+        $provider = $this->siteProvider();
+        $provider->setUserAgent("hello-user");
+
+        $site1Client = $provider->getSite(100)->httpClient();
+        $this->assertEquals(
+            "hello-user",
+            $site1Client
+                ->get("/hello", [], [], ["throw" => false])
+                ->getRequest()
+                ->getHeader("user-agent"),
+        );
+
+        $this->assertEquals(
+            "hello-user",
+            $provider
+                ->getOrchHttpClient()
+                ->get("/test", [], [], ["throw" => false])
+                ->getRequest()
+                ->getHeader("user-agent"),
+        );
     }
 }

@@ -6,14 +6,14 @@
 
 namespace Garden\Sites\Tests;
 
-use Garden\Http\Mocks\MockHttpHandler;
 use Garden\Sites\Exceptions\ConfigLoadingException;
-use Garden\Sites\Exceptions\SiteNotFoundException;
-use Garden\Sites\Local\LocalSite;
 use Garden\Sites\Local\LocalSiteProvider;
 use Garden\Sites\SiteProvider;
 use Garden\Sites\Tests\Fixtures\ExpectedSite;
 
+/**
+ * Tests for the {@link LocalSiteProvider}
+ */
 class LocalSitesTest extends BaseSitesTestCase
 {
     const SID_CFG_PHP = 100;
@@ -30,7 +30,6 @@ class LocalSitesTest extends BaseSitesTestCase
         $commonConfig = [
             "Config1" => "val1",
             "Nested.Nested1" => "valnested1",
-            "MergedWithMe" => ["val1", "val2"],
         ];
         return [
             self::SID_CFG_PHP => new ExpectedSite(
@@ -47,7 +46,9 @@ class LocalSitesTest extends BaseSitesTestCase
                 "http://vanilla.localhost/valid",
                 $commonConfig + [
                     "SomeArr" => [3, 4, 5],
-                    "ClusterConfig.SomeKey" => "cluster2",
+                    "ClusterConfig.SomeKey" => "cluster1",
+                    "MergeWithMe.Key1" => "val1",
+                    "MergeWithMe.Key2" => "val2",
                 ],
             ),
             self::SID_NO_SYS_TOKEN => (new ExpectedSite(
@@ -76,6 +77,9 @@ class LocalSitesTest extends BaseSitesTestCase
         ];
     }
 
+    /**
+     * @inheritDoc
+     */
     public function provideExpectedSites(): iterable
     {
         foreach ($this->expectedSites() as $expectedSite) {
@@ -83,27 +87,35 @@ class LocalSitesTest extends BaseSitesTestCase
         }
     }
 
-    public function getValidSiteIDs(): array
-    {
-        return [self::SID_CFG_PHP, self::SID_VALID, self::SID_E2E];
-    }
-
-    public function siteProvider(): SiteProvider
+    /**
+     * @inheritDoc
+     */
+    public function siteProvider(): LocalSiteProvider
     {
         $dir = realpath(__DIR__ . "/configs");
         $siteProvider = new LocalSiteProvider($dir);
         return $siteProvider;
     }
 
+    /**
+     * Test loading of all sites.
+     *
+     * @return void
+     */
     public function testAllSites()
     {
-        $allSites = $this->siteProvider()->getSites("localhost", "localhost");
+        $allSites = $this->siteProvider()->getSites();
 
         foreach ($this->expectedSites() as $expectedSite) {
             $expectedSite->assertMatchesSite($allSites[$expectedSite->getSiteID()] ?? null);
         }
     }
 
+    /**
+     * Test sites that have an invalid cluster config.
+     *
+     * @return void
+     */
     public function testInvalidClusterConfig()
     {
         // Site 105 has an invalid config file.
@@ -111,6 +123,11 @@ class LocalSitesTest extends BaseSitesTestCase
         $this->assertNull($site->getConfigValueByKey("SomeConfig"));
     }
 
+    /**
+     * Test sites with an invalid base path.
+     *
+     * @return void
+     */
     public function testInvalidBasePath()
     {
         $siteProvider = new LocalSiteProvider("/not-a-path");
@@ -118,6 +135,11 @@ class LocalSitesTest extends BaseSitesTestCase
         $siteProvider->loadAllClusters();
     }
 
+    /**
+     * Test serialization o site records.
+     *
+     * @return void
+     */
     public function testSerializeSite(): void
     {
         $site = $this->siteProvider()->getSite(self::SID_VALID);

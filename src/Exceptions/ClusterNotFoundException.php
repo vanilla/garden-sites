@@ -8,6 +8,9 @@ namespace Garden\Sites\Exceptions;
 
 use Garden\Utils\ContextException;
 
+/**
+ * Exception thrown when a cluster could not be loaded.
+ */
 class ClusterNotFoundException extends ContextException
 {
     public function __construct(string $clusterID)

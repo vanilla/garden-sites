@@ -8,18 +8,18 @@ namespace Garden\Sites;
 
 use Garden\Sites\Exceptions\ClusterNotFoundException;
 use Garden\Sites\Exceptions\SiteNotFoundException;
-use Garden\Sites\Orch\OrchCluster;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
-use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 
 /**
+ * Class for loading sites and clusters.
+ *
  * @template TSite of Site
  * @template TCluster of Cluster
  */
 abstract class SiteProvider
 {
-    protected CacheInterface $cache;
+    protected \Symfony\Contracts\Cache\CacheInterface $cache;
 
     protected string $userAgent = "vanilla-sites-package";
 
@@ -56,19 +56,29 @@ abstract class SiteProvider
     /**
      * Apply a symfony cache contract.
      *
-     * @param CacheInterface $cache
+     * @param \Symfony\Contracts\Cache\CacheInterface $cache
      * @return void
      */
-    public function setCache(CacheInterface $cache): void
+    public function setCache(\Symfony\Contracts\Cache\CacheInterface $cache): void
     {
         $this->cache = $cache;
     }
 
+    /**
+     * Get the user agent to use for all network requests originating from the provider.
+     *
+     * @return string
+     */
     public function getUserAgent(): string
     {
         return $this->userAgent;
     }
 
+    /**
+     * Set the user agent used in network requests originating from the provider.
+     *
+     * @param string $userAgent
+     */
     public function setUserAgent(string $userAgent): void
     {
         $this->userAgent = $userAgent;
@@ -152,6 +162,9 @@ abstract class SiteProvider
     abstract public function getSite(int $siteID): Site;
 
     /**
+     * Method to load and return all clusters from its original data source.
+     * Results will be cached.
+     *
      * @return array<string, TCluster>
      */
     abstract protected function loadAllClusters(): array;
