@@ -53,7 +53,7 @@ use Symfony\Component\Cache\Adapter\RedisAdapter;
 use Symfony\Contracts\Cache\CacheInterface;
 
 $orchHttpClient = new OrchHttpClient("https://orch.vanilla.localhost", "access-token-here");
-$siteProvider = new OrchSiteProvider($orchHttpClient, OrchCluster::REGION_AMS1, OrchCluster::NETWORK_PRODUCTION);
+$siteProvider = new OrchSiteProvider($orchHttpClient, OrchCluster::REGION_AMS1_PROD1);
 
 // It is highly recommended to set a user-agent for network requests.
 $siteProvider->setUserAgent("my-service:1.0");
@@ -70,8 +70,8 @@ $cache = new MemcachedAdapter(/** Configuration here. */);
 
 $siteProvider->setCache($cache);
 
-# Region/network can be changed later
-$siteProvider->setRegionAndNetwork(OrchCluster::REGION_YUL1, OrchCluster::NETWORK_DEVELOPMENT);
+# Region can be changed later
+$siteProvider->setRegionID(OrchCluster::REGION_YUL1_PROD1);
 ```
 
 The orchestration provider needs to be configured with an authenticated `OrchHttpClient` and a region/network to load sites from.
@@ -159,5 +159,9 @@ function doSomethingWithSite(Site $site)
     // Configs are cached on the `Garden\Sites\Site` instance
     // You can clear them here.
     $site->clearConfigCache();
+
+    // Check services hostnames the site should be using.
+    $baseUrl = $site->getQueueServiceBaseUrl();
+    $baseUrl = $site->getSearchServiceBaseUrl();
 }
 ```

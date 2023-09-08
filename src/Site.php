@@ -10,6 +10,7 @@ use Garden\Http\HttpHandlerInterface;
 use Garden\Sites\Clients\SiteHttpClient;
 use Garden\Sites\Exceptions\BadApiCredentialsException;
 use Garden\Sites\Exceptions\ClusterNotFoundException;
+use Garden\Sites\Exceptions\InvalidRegionException;
 use Garden\Utils\ArrayUtils;
 
 /**
@@ -181,5 +182,59 @@ abstract class Site implements \JsonSerializable
     public function jsonSerialize(): array
     {
         return $this->siteRecord->jsonSerialize();
+    }
+
+    /**
+     * Get the hostname of the proper search service to use for the cluster.
+     *
+     * @return string
+     */
+    public function getQueueServiceBaseUrl(): string
+    {
+        $configOverride = $this->getConfigValueByKey("VanillaQueue.BaseUrl", null);
+        if (!empty($configOverride)) {
+            return $configOverride;
+        }
+
+        switch ($this->getCluster()->getRegionID()) {
+            case Cluster::REGION_LOCALHOST:
+                return "http://queue.vanilla.localhost";
+            case Cluster::REGION_YUL1_DEV1:
+                return "https://yul1-vanillaqueue-dev1.v-fabric.net";
+            case Cluster::REGION_YUL1_PROD1:
+                return "https://yul1-vanillaqueue-prod1.v-fabric.net";
+            case Cluster::REGION_AMS1_PROD1:
+                return "https://ams1-vanillaqueue-prod1.v-fabric.net";
+            case Cluster::REGION_SJC1_PROD1:
+                return "https://sjc1-vanillaqueue-prod1.v-fabric.net";
+            default:
+                throw new InvalidRegionException($this->getCluster()->getRegionID());
+        }
+    }
+
+    /**
+     * Get the hostname of the proper queue service to use for the cluster.
+     *
+     * @return string
+     */
+    public function getSearchServiceBaseUrl(): string
+    {
+        $configOverride = $this->getConfigValueByKey("Inf.SearchApi.URL", null);
+        if (!empty($configOverride)) {
+            return $configOverride;
+        }
+
+        switch ($this->getCluster()->getRegionID()) {
+            case Cluster::REGION_LOCALHOST:
+            case Cluster::REGION_YUL1_DEV1: // This is temporary until we have a localhost version of the search api.
+                return "https://yul1-dev1-vanillasearch-api.v-fabric.net";
+            case Cluster::REGION_YUL1_PROD1:
+            case Cluster::REGION_SJC1_PROD1: // Temporarily using the YUL prod instance until https://higherlogic.atlassian.net/browse/PV-229 is completed.
+                return "https://yul1-vanillasearch-prod1-api.v-fabric.net";
+            case Cluster::REGION_AMS1_PROD1:
+                return "https://ms-vanilla-search-api-ams.v-fabric.net";
+            default:
+                throw new InvalidRegionException($this->getCluster()->getRegionID());
+        }
     }
 }

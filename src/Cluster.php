@@ -6,6 +6,7 @@
 
 namespace Garden\Sites;
 
+use Garden\Sites\Exceptions\InvalidRegionException;
 use Garden\Sites\Orch\OrchCluster;
 
 /**
@@ -13,20 +14,30 @@ use Garden\Sites\Orch\OrchCluster;
  */
 class Cluster
 {
+    public const REGION_YUL1_DEV1 = "yul1-dev1";
+    public const REGION_YUL1_PROD1 = "yul1-prod1";
+    public const REGION_AMS1_PROD1 = "ams1-prod1";
+    public const REGION_SJC1_PROD1 = "sjc1-prod1";
+    public const REGION_LOCALHOST = "localhost";
+    public const VALID_REGIONS = [
+        self::REGION_YUL1_DEV1,
+        self::REGION_YUL1_PROD1,
+        self::REGION_AMS1_PROD1,
+        self::REGION_SJC1_PROD1,
+        self::REGION_LOCALHOST,
+    ];
+
     private string $clusterID;
-    private string $region;
-    private string $network;
+    private string $regionID;
 
     /**
      * @param string $clusterID
-     * @param string $region
-     * @param string $network
+     * @param string $regionID One of {@link self::REGION*} constants.
      */
-    public function __construct(string $clusterID, string $region, string $network)
+    public function __construct(string $clusterID, string $regionID)
     {
         $this->clusterID = $clusterID;
-        $this->region = $region;
-        $this->network = $network;
+        $this->regionID = $regionID;
     }
 
     /**
@@ -42,30 +53,12 @@ class Cluster
     /**
      * Get a string identifying the region that the cluster belongs to. This is normally an acronym for some geo-located datacenter.
      *
-     * Examples:
-     * - mtl - {@link OrchCluster::REGION_YUL1}
-     * - sjc / sfo - {@link OrchCluster::REGION_SJC}
-     * - ams - {@link OrchCluster::REGION_AMS1}
+     * One of {@link self::VALID_REGIONS}
      *
      * @return string
      */
-    public function getRegion(): string
+    public function getRegionID(): string
     {
-        return $this->region;
-    }
-
-    /**
-     * Get a string identifying the type of network the cluster runs on.
-     *
-     * Examples
-     * - production {@link OrchCluster::NETWORK_PRODUCTION}
-     * - development {@link OrchCluster::NETWORK_DEVELOPMENT}
-     * - localhost
-     *
-     * @return string
-     */
-    public function getNetwork(): string
-    {
-        return $this->network;
+        return $this->regionID;
     }
 }

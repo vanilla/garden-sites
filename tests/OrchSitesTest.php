@@ -10,6 +10,7 @@ use Garden\Http\HttpRequest;
 use Garden\Http\HttpResponse;
 use Garden\Http\Mocks\MockHttpHandler;
 use Garden\Sites\Clients\OrchHttpClient;
+use Garden\Sites\Cluster;
 use Garden\Sites\FileUtils;
 use Garden\Sites\Orch\OrchCluster;
 use Garden\Sites\Orch\OrchSiteProvider;
@@ -47,7 +48,7 @@ class OrchSitesTest extends BaseSitesTestCase
             $this->fail("Mock handler wasn't configured");
         }
         $orchClient->setHandler($this->mockHandler);
-        $orchProvider = new OrchSiteProvider($orchClient, OrchCluster::REGION_YUL1, OrchCluster::NETWORK_DEVELOPMENT);
+        $orchProvider = new OrchSiteProvider($orchClient, Cluster::REGION_YUL1_DEV1);
 
         $requestRoot = __DIR__ . "/mock-orch";
         $requestPaths = iterator_to_array(FileUtils::iterateFiles($requestRoot, "/.*\.json$/"));
@@ -86,14 +87,14 @@ class OrchSitesTest extends BaseSitesTestCase
                 "cl10001",
                 "https://site1.vanillatesting.com",
                 $commonConfigs,
-            ))->expectNetworkAndRegion(OrchCluster::REGION_YUL1, OrchCluster::NETWORK_DEVELOPMENT),
+            ))->expectRegion(Cluster::REGION_YUL1_DEV1),
             4000001 => (new ExpectedSite(
                 4000001,
                 50000,
                 "cl10001",
                 "https://test.vanilla.community/hub",
                 $commonConfigs,
-            ))->expectNetworkAndRegion(OrchCluster::REGION_YUL1, OrchCluster::NETWORK_DEVELOPMENT),
+            ))->expectRegion(Cluster::REGION_YUL1_DEV1),
 
             4000002 => (new ExpectedSite(
                 4000002,
@@ -101,21 +102,21 @@ class OrchSitesTest extends BaseSitesTestCase
                 "cl10001",
                 "https://test.vanilla.community/node1",
                 $commonConfigs,
-            ))->expectNetworkAndRegion(OrchCluster::REGION_YUL1, OrchCluster::NETWORK_DEVELOPMENT),
+            ))->expectRegion(Cluster::REGION_YUL1_DEV1),
             4000003 => (new ExpectedSite(
                 4000003,
                 60000,
                 "cl40011",
                 "https://yul1.vanilla.community",
                 $commonConfigs,
-            ))->expectNetworkAndRegion(OrchCluster::REGION_YUL1, OrchCluster::NETWORK_PRODUCTION),
+            ))->expectRegion(Cluster::REGION_YUL1_PROD1),
             4000004 => (new ExpectedSite(
                 4000004,
                 60000,
                 "cl40015",
                 "https://ams1.vanilla.community",
                 $commonConfigs,
-            ))->expectNetworkAndRegion(OrchCluster::REGION_AMS1, OrchCluster::NETWORK_PRODUCTION),
+            ))->expectRegion(Cluster::REGION_AMS1_PROD1),
             4000005 => (new ExpectedSite(
                 4000005,
                 70000,
@@ -124,7 +125,7 @@ class OrchSitesTest extends BaseSitesTestCase
                 $commonConfigs,
             ))
                 ->expectNoSystemToken()
-                ->expectNetworkAndRegion(OrchCluster::REGION_YUL1, OrchCluster::NETWORK_DEVELOPMENT),
+                ->expectRegion(Cluster::REGION_YUL1_DEV1),
         ];
     }
 
@@ -143,29 +144,24 @@ class OrchSitesTest extends BaseSitesTestCase
      */
     public function provideSiteFiltering(): iterable
     {
-        yield "yul1 dev" => [
-            OrchCluster::REGION_YUL1,
-            OrchCluster::NETWORK_DEVELOPMENT,
-            [100, 4000001, 4000002, 4000005],
-        ];
-        yield "yul1 prod" => [OrchCluster::REGION_YUL1, OrchCluster::NETWORK_PRODUCTION, [4000003]];
-        yield "ams1 prod" => [OrchCluster::REGION_AMS1, OrchCluster::NETWORK_PRODUCTION, [4000004]];
+        yield "yul1 dev" => [Cluster::REGION_YUL1_DEV1, [100, 4000001, 4000002, 4000005]];
+        yield "yul1 prod" => [Cluster::REGION_YUL1_PROD1, [4000003]];
+        yield "ams1 prod" => [Cluster::REGION_AMS1_PROD1, [4000004]];
     }
 
     /**
      * Test that sites are properly filtered by network and region.
      *
-     * @param string $region
-     * @param string $network
+     * @param string $regionID
      * @param array $expectedSiteIDs
      * @return void
      *
      * @dataProvider provideSiteFiltering
      */
-    public function testSiteFiltering(string $region, string $network, array $expectedSiteIDs)
+    public function testSiteFiltering(string $regionID, array $expectedSiteIDs)
     {
         $siteProvider = $this->siteProvider();
-        $siteProvider->setRegionAndNetwork($region, $network);
+        $siteProvider->setRegionID($regionID);
         $allSites = $siteProvider->getSites();
 
         $this->assertCount(count($expectedSiteIDs), $allSites);

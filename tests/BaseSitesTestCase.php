@@ -45,7 +45,7 @@ abstract class BaseSitesTestCase extends TestCase
     public function testSiteClientBaseUrl(ExpectedSite $expectedSite)
     {
         $provider = $this->siteProvider();
-        $provider->setRegionAndNetwork($expectedSite->expectedRegion, $expectedSite->expectedNetwork);
+        $provider->setRegionID($expectedSite->expectedRegionID);
         $site = $provider->getSite($expectedSite->getSiteID());
         $siteClient = $site->httpClient();
         $siteClient->setThrowExceptions(false);
@@ -66,7 +66,7 @@ abstract class BaseSitesTestCase extends TestCase
     public function testSiteClientAuth(ExpectedSite $expectedSite): void
     {
         $provider = $this->siteProvider();
-        $provider->setRegionAndNetwork($expectedSite->expectedRegion, $expectedSite->expectedNetwork);
+        $provider->setRegionID($expectedSite->expectedRegionID);
         $site = $provider->getSite($expectedSite->getSiteID());
         $siteClient = $site->httpClient();
         $siteClient->setThrowExceptions(false);
@@ -100,7 +100,7 @@ abstract class BaseSitesTestCase extends TestCase
     public function testValidSites(ExpectedSite $expectedSite): void
     {
         $provider = $this->siteProvider();
-        $provider->setRegionAndNetwork($expectedSite->expectedRegion, $expectedSite->expectedNetwork);
+        $provider->setRegionID($expectedSite->expectedRegionID);
         $site = $provider->getSite($expectedSite->getSiteID());
         $expectedSite->assertMatchesSite($site);
         $expectedSite->assertConfigsMatchSite($site);
@@ -108,6 +108,8 @@ abstract class BaseSitesTestCase extends TestCase
         // Sites have a cluster
         $cluster = $site->getCluster();
         $this->assertEquals($expectedSite->getClusterID(), $cluster->getClusterID());
+        $this->assertIsString($site->getQueueServiceBaseUrl());
+        $this->assertIsString($site->getSearchServiceBaseUrl());
     }
 
     public function testGetInvalidSite()

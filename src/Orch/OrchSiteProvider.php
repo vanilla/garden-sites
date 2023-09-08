@@ -8,6 +8,7 @@ namespace Garden\Sites\Orch;
 
 use Garden\Http\CurlHandler;
 use Garden\Sites\Clients\OrchHttpClient;
+use Garden\Sites\Cluster;
 use Garden\Sites\Exceptions\ConfigLoadingException;
 use Garden\Sites\SiteProvider;
 use Garden\Sites\SiteRecord;
@@ -22,11 +23,14 @@ class OrchSiteProvider extends SiteProvider
     private OrchHttpClient $orchHttpClient;
 
     /**
-     * @param OrchHttpClient $orchHttpClient
+     * Constructor.
+     *
+     * @param OrchHttpClient $orchHttpClient A configured orch client.
+     * @param string $regionID One of the {@link Cluster::REGION_*} constants.
      */
-    public function __construct(OrchHttpClient $orchHttpClient, string $region, string $network)
+    public function __construct(OrchHttpClient $orchHttpClient, string $regionID)
     {
-        parent::__construct($region, $network);
+        parent::__construct($regionID);
         $this->orchHttpClient = $orchHttpClient;
     }
 
@@ -80,12 +84,30 @@ class OrchSiteProvider extends SiteProvider
 
         $result = [];
         foreach ($apiClusters as $apiCluster) {
-            $cluster = new OrchCluster(
-                $apiCluster["ClusterID"],
-                $apiCluster["CloudZone"],
-                $apiCluster["Network"],
-                $apiCluster["ApiToken"],
-            );
+            switch ($apiCluster["CloudZone"]) {
+                case "sfo":
+                case "sjc":
+                    $region = Cluster::REGION_SJC1_PROD1;
+                    break;
+                case "ams":
+                case "ams-1":
+                    $region = Cluster::REGION_AMS1_PROD1;
+                    break;
+                case "mtl":
+                case "yul":
+                    if ($apiCluster["Network"] === "production") {
+                        $region = Cluster::REGION_YUL1_PROD1;
+                        break;
+                    } else {
+                        $region = Cluster::REGION_YUL1_DEV1;
+                        break;
+                    }
+                default:
+                    // Ignore this cluster.
+                    continue 2;
+            }
+
+            $cluster = new OrchCluster($apiCluster["ClusterID"], $region, $apiCluster["ApiToken"]);
             $result[$cluster->getClusterID()] = $cluster;
         }
 

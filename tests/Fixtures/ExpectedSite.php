@@ -6,6 +6,7 @@
 
 namespace Garden\Sites\Tests\Fixtures;
 
+use Garden\Sites\Cluster;
 use Garden\Sites\Site;
 use Garden\Sites\SiteRecord;
 use PHPUnit\Framework\TestCase;
@@ -19,8 +20,7 @@ class ExpectedSite extends SiteRecord
 
     public bool $expectSystemToken = true;
 
-    public string $expectedRegion = "localhost";
-    public string $expectedNetwork = "localhost";
+    public string $expectedRegionID = Cluster::REGION_LOCALHOST;
 
     /**
      * @param int $siteID
@@ -45,14 +45,12 @@ class ExpectedSite extends SiteRecord
     }
 
     /**
-     * @param string $region
-     * @param string $network
+     * @param string $regionID
      * @return $this
      */
-    public function expectNetworkAndRegion(string $region, string $network): self
+    public function expectRegion(string $regionID): self
     {
-        $this->expectedRegion = $region;
-        $this->expectedNetwork = $network;
+        $this->expectedRegionID = $regionID;
         return $this;
     }
 

@@ -31,7 +31,7 @@ class LocalSiteProvider extends SiteProvider
      */
     public function __construct(string $siteConfigFsBasePath)
     {
-        parent::__construct("localhost", "localhost");
+        parent::__construct("localhost");
         $this->siteConfigFsBasePath = $siteConfigFsBasePath;
     }
 

@@ -17,6 +17,6 @@ class LocalCluster extends Cluster
 
     public function __construct(string $clusterID = self::DEFAULT_CLUSTER_ID)
     {
-        parent::__construct($clusterID, "localhost", "localhost");
+        parent::__construct($clusterID, Cluster::REGION_LOCALHOST);
     }
 }

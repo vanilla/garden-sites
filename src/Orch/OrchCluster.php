@@ -14,13 +14,6 @@ use Garden\Sites\Cluster;
  */
 class OrchCluster extends Cluster
 {
-    public const REGION_YUL1 = "mtl";
-    public const REGION_AMS1 = "ams-1";
-    public const REGION_SJC = "sfo";
-
-    public const NETWORK_PRODUCTION = "production";
-    public const NETWORK_DEVELOPMENT = "development";
-
     /** @var string Secret used in communication with the cluster. */
     private string $secret;
 
@@ -28,14 +21,13 @@ class OrchCluster extends Cluster
      * Constructor.
      *
      * @param string $clusterID
-     * @param string $region
-     * @param string $network
+     * @param string $regionID
      * @param string $secret
      */
-    public function __construct(string $clusterID, string $region, string $network, string $secret)
+    public function __construct(string $clusterID, string $regionID, string $secret)
     {
         $this->secret = $secret;
-        parent::__construct($clusterID, $region, $network);
+        parent::__construct($clusterID, $regionID);
     }
 
     /**
