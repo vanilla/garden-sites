@@ -11,11 +11,15 @@ namespace Garden\Sites;
  */
 final class FileUtils
 {
+    /**
+     * @param string $baseDir
+     * @param non-empty-string $pattern
+     * @return \Generator
+     */
     public static function iterateFiles(string $baseDir, string $pattern): \Generator
     {
         $it = new \RecursiveDirectoryIterator($baseDir, \FilesystemIterator::SKIP_DOTS);
         $it = new \RecursiveIteratorIterator($it);
-        // $it = new \RegexIterator($it, $pa, \RegexIterator::MATCH);
 
         /**
          * @var \SplFileInfo $file
