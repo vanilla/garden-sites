@@ -7,7 +7,7 @@
         "vimeo/psalm": "^5.14",
         "symfony/cache": "^5.4"
     },
-    "license": "Proprietary",
+    "license": "proprietary",
     "autoload": {
         "psr-4": {
             "Garden\\Sites\\": "src/"
