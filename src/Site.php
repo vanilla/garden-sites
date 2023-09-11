@@ -16,8 +16,8 @@ use Garden\Utils\ArrayUtils;
 /**
  * Interface classes representing a site.
  *
- * @template TSite of Site
- * @template TCluster of Cluster
+ * @template-covariant  TSite of Site
+ * @template-covariant  TCluster of Cluster
  */
 abstract class Site implements \JsonSerializable
 {

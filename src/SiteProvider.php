@@ -14,8 +14,8 @@ use Symfony\Contracts\Cache\ItemInterface;
 /**
  * Class for loading sites and clusters.
  *
- * @template TSite of Site
- * @template TCluster of Cluster
+ * @template-covariant  TSite of Site
+ * @template-covariant  TCluster of Cluster
  */
 abstract class SiteProvider
 {

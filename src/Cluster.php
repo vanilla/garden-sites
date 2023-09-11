@@ -6,9 +6,6 @@
 
 namespace Garden\Sites;
 
-use Garden\Sites\Exceptions\InvalidRegionException;
-use Garden\Sites\Orch\OrchCluster;
-
 /**
  * Class representing a cluster of sites.
  */
