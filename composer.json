@@ -25,7 +25,7 @@
         }
     ],
     "require": {
-        "vanilla/garden-http": "^2.6",
+        "vanilla/garden-http": "^2.8",
         "ext-json": "*",
         "php": ">=7.4",
         "vanilla/garden-utils": "^1.0.1",

@@ -21,6 +21,7 @@ class OrchHttpClient extends HttpClient
     {
         parent::__construct($orchBaseUrl);
         $this->setThrowExceptions(true);
+        $this->setDefaultHeader("content-type", "application/json");
         $this->setDefaultHeader("X-Access-Token", $accessToken);
     }
 
