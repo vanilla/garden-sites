@@ -27,18 +27,13 @@ class LocalSite extends Site
      * @param string $configPath
      * @param SiteRecord $siteRecord
      * @param LocalSiteProvider $siteProvider
-     * @param HttpHandlerInterface $httpHandler
      *
      * @psalm-suppress InvalidArgument
      */
-    public function __construct(
-        string $configPath,
-        SiteRecord $siteRecord,
-        LocalSiteProvider $siteProvider,
-        HttpHandlerInterface $httpHandler
-    ) {
+    public function __construct(string $configPath, SiteRecord $siteRecord, LocalSiteProvider $siteProvider)
+    {
         $this->configPath = $configPath;
-        parent::__construct($siteRecord, $siteProvider, $httpHandler);
+        parent::__construct($siteRecord, $siteProvider);
     }
 
     /**

@@ -26,11 +26,11 @@ class OrchSiteProvider extends SiteProvider
      * Constructor.
      *
      * @param OrchHttpClient $orchHttpClient A configured orch client.
-     * @param string $regionID One of the {@link Cluster::REGION_*} constants.
+     * @param string[] $regionIDs One or more of the {@link Cluster::REGION_*} constants.
      */
-    public function __construct(OrchHttpClient $orchHttpClient, string $regionID)
+    public function __construct(OrchHttpClient $orchHttpClient, array $regionIDs)
     {
-        parent::__construct($regionID);
+        parent::__construct($regionIDs);
         $this->orchHttpClient = $orchHttpClient;
     }
 
@@ -71,7 +71,7 @@ class OrchSiteProvider extends SiteProvider
     public function getSite(int $siteID): OrchSite
     {
         $siteRecord = $this->getSiteRecord($siteID);
-        $site = new OrchSite($siteRecord, $this, new CurlHandler());
+        $site = new OrchSite($siteRecord, $this);
         return $site;
     }
 

@@ -45,7 +45,7 @@ abstract class BaseSitesTestCase extends TestCase
     public function testSiteClientBaseUrl(ExpectedSite $expectedSite)
     {
         $provider = $this->siteProvider();
-        $provider->setRegionID($expectedSite->expectedRegionID);
+        $provider->setRegionIDs([$expectedSite->expectedRegionID]);
         $site = $provider->getSite($expectedSite->getSiteID());
         $siteClient = $site->httpClient();
         $siteClient->setThrowExceptions(false);
@@ -66,7 +66,7 @@ abstract class BaseSitesTestCase extends TestCase
     public function testSiteClientAuth(ExpectedSite $expectedSite): void
     {
         $provider = $this->siteProvider();
-        $provider->setRegionID($expectedSite->expectedRegionID);
+        $provider->setRegionIDs([$expectedSite->expectedRegionID]);
         $site = $provider->getSite($expectedSite->getSiteID());
         $siteClient = $site->httpClient();
         $siteClient->setThrowExceptions(false);
@@ -100,7 +100,7 @@ abstract class BaseSitesTestCase extends TestCase
     public function testValidSites(ExpectedSite $expectedSite): void
     {
         $provider = $this->siteProvider();
-        $provider->setRegionID($expectedSite->expectedRegionID);
+        $provider->setRegionIDs([$expectedSite->expectedRegionID]);
         $site = $provider->getSite($expectedSite->getSiteID());
         $expectedSite->assertMatchesSite($site);
         $expectedSite->assertConfigsMatchSite($site);

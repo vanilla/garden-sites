@@ -6,6 +6,7 @@
 
 namespace Garden\Sites;
 
+use Garden\Http\CurlHandler;
 use Garden\Http\HttpHandlerInterface;
 use Garden\Sites\Clients\SiteHttpClient;
 use Garden\Sites\Exceptions\BadApiCredentialsException;
@@ -36,13 +37,12 @@ abstract class Site implements \JsonSerializable
     /**
      * @param SiteRecord $siteRecord
      * @param SiteProvider<TSite, TCluster> $siteProvider
-     * @param HttpHandlerInterface $httpHandler
      */
-    public function __construct(SiteRecord $siteRecord, SiteProvider $siteProvider, HttpHandlerInterface $httpHandler)
+    public function __construct(SiteRecord $siteRecord, SiteProvider $siteProvider)
     {
         $this->siteRecord = $siteRecord;
         $this->siteProvider = $siteProvider;
-        $this->httpHandler = $httpHandler;
+        $this->httpHandler = new CurlHandler();
     }
 
     /**

@@ -23,30 +23,30 @@ abstract class SiteProvider
 
     protected string $userAgent = "vanilla-sites-package";
 
-    /** @var string The region sites should be loaded from. */
-    protected string $regionID;
+    /** @var string[] The region sites should be loaded from. */
+    protected array $regionIDs;
 
     /**
      * Constructor.
      *
-     * @param string $regionID One of the {@link Cluster::REGION_*} constants
+     * @param string[] $regionIDs One or more of the {@link Cluster::REGION_*} constants
      */
-    public function __construct(string $regionID)
+    public function __construct(array $regionIDs)
     {
         $this->cache = new ArrayAdapter();
-        $this->regionID = $regionID;
+        $this->regionIDs = $regionIDs;
     }
 
     /**
      * Set the region we should be filtering too.
      *
-     * @param string $regionID
+     * @param string[] $regionIDs
      *
      * @return void
      */
-    public function setRegionID(string $regionID): void
+    public function setRegionIDs(array $regionIDs): void
     {
-        $this->regionID = $regionID;
+        $this->regionIDs = $regionIDs;
     }
 
     /**
@@ -201,7 +201,7 @@ abstract class SiteProvider
         });
 
         $filteredClusters = array_filter($allClusters, function (Cluster $cluster) {
-            return $cluster->getRegionID() === $this->regionID;
+            return in_array($cluster->getRegionID(), $this->regionIDs);
         });
 
         return $filteredClusters;

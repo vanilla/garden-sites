@@ -16,12 +16,15 @@ class Cluster
     public const REGION_AMS1_PROD1 = "ams1-prod1";
     public const REGION_SJC1_PROD1 = "sjc1-prod1";
     public const REGION_LOCALHOST = "localhost";
+    public const REGION_MOCK = "mock";
+
     public const VALID_REGIONS = [
         self::REGION_YUL1_DEV1,
         self::REGION_YUL1_PROD1,
         self::REGION_AMS1_PROD1,
         self::REGION_SJC1_PROD1,
         self::REGION_LOCALHOST,
+        self::REGION_MOCK,
     ];
 
     private string $clusterID;

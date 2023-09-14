@@ -53,7 +53,7 @@ use Symfony\Component\Cache\Adapter\RedisAdapter;
 use Symfony\Contracts\Cache\CacheInterface;
 
 $orchHttpClient = new OrchHttpClient("https://orch.vanilla.localhost", "access-token-here");
-$siteProvider = new OrchSiteProvider($orchHttpClient, OrchCluster::REGION_AMS1_PROD1);
+$siteProvider = new OrchSiteProvider($orchHttpClient, [OrchCluster::REGION_AMS1_PROD1]);
 
 // It is highly recommended to set a user-agent for network requests.
 $siteProvider->setUserAgent("my-service:1.0");
@@ -71,7 +71,7 @@ $cache = new MemcachedAdapter(/** Configuration here. */);
 $siteProvider->setCache($cache);
 
 # Region can be changed later
-$siteProvider->setRegionID(OrchCluster::REGION_YUL1_PROD1);
+$siteProvider->setRegionIDs([OrchCluster::REGION_YUL1_PROD1, OrchCluster::REGION_AMS1_PROD1]);
 ```
 
 The orchestration provider needs to be configured with an authenticated `OrchHttpClient` and a region/network to load sites from.
@@ -117,8 +117,7 @@ function doSomethingWithCluster(Cluster $cluster)
 {
     // A few getters
     $clusterID = $cluster->getClusterID();
-    $region = $cluster->getRegion();
-    $network = $cluster->getNetwork();
+    $regionID = $cluster->getRegionID();
 }
 
 function doSomethingWithSite(Site $site)

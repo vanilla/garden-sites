@@ -22,14 +22,10 @@ class OrchSite extends Site
      *
      * @param SiteRecord $siteRecord
      * @param OrchSiteProvider $siteProvider
-     * @param HttpHandlerInterface $httpHandler
      */
-    public function __construct(
-        SiteRecord $siteRecord,
-        OrchSiteProvider $siteProvider,
-        HttpHandlerInterface $httpHandler
-    ) {
-        parent::__construct($siteRecord, $siteProvider, $httpHandler);
+    public function __construct(SiteRecord $siteRecord, OrchSiteProvider $siteProvider)
+    {
+        parent::__construct($siteRecord, $siteProvider);
     }
 
     /**

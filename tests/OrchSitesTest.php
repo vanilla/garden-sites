@@ -48,7 +48,7 @@ class OrchSitesTest extends BaseSitesTestCase
             $this->fail("Mock handler wasn't configured");
         }
         $orchClient->setHandler($this->mockHandler);
-        $orchProvider = new OrchSiteProvider($orchClient, Cluster::REGION_YUL1_DEV1);
+        $orchProvider = new OrchSiteProvider($orchClient, [Cluster::REGION_YUL1_DEV1]);
 
         $requestRoot = __DIR__ . "/mock-orch";
         $requestPaths = iterator_to_array(FileUtils::iterateFiles($requestRoot, "/.*\.json$/"));
@@ -161,7 +161,7 @@ class OrchSitesTest extends BaseSitesTestCase
     public function testSiteFiltering(string $regionID, array $expectedSiteIDs)
     {
         $siteProvider = $this->siteProvider();
-        $siteProvider->setRegionID($regionID);
+        $siteProvider->setRegionIDs([$regionID]);
         $allSites = $siteProvider->getSites();
 
         $this->assertCount(count($expectedSiteIDs), $allSites);

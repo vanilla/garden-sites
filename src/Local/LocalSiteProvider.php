@@ -7,6 +7,7 @@
 namespace Garden\Sites\Local;
 
 use Garden\Http\CurlHandler;
+use Garden\Sites\Cluster;
 use Garden\Sites\Exceptions\ConfigLoadingException;
 use Garden\Sites\SiteProvider;
 use Garden\Sites\SiteRecord;
@@ -31,7 +32,7 @@ class LocalSiteProvider extends SiteProvider
      */
     public function __construct(string $siteConfigFsBasePath)
     {
-        parent::__construct("localhost");
+        parent::__construct([Cluster::REGION_LOCALHOST]);
         $this->siteConfigFsBasePath = $siteConfigFsBasePath;
     }
 
@@ -95,7 +96,7 @@ class LocalSiteProvider extends SiteProvider
 
         $configPath = $siteRecord->getExtra("configPath") ?? "";
 
-        $localSite = new LocalSite($this->siteConfigFsBasePath . $configPath, $siteRecord, $this, new CurlHandler());
+        $localSite = new LocalSite($this->siteConfigFsBasePath . $configPath, $siteRecord, $this);
         return $localSite;
     }
 
