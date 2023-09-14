@@ -10,6 +10,7 @@ use Garden\Http\CurlHandler;
 use Garden\Sites\Clients\OrchHttpClient;
 use Garden\Sites\Cluster;
 use Garden\Sites\Exceptions\ConfigLoadingException;
+use Garden\Sites\Exceptions\InvalidRegionException;
 use Garden\Sites\SiteProvider;
 use Garden\Sites\SiteRecord;
 use Garden\Utils\ArrayUtils;
@@ -84,34 +85,45 @@ class OrchSiteProvider extends SiteProvider
 
         $result = [];
         foreach ($apiClusters as $apiCluster) {
-            switch ($apiCluster["CloudZone"]) {
-                case "sfo":
-                case "sjc":
-                    $region = Cluster::REGION_SJC1_PROD1;
-                    break;
-                case "ams":
-                case "ams-1":
-                    $region = Cluster::REGION_AMS1_PROD1;
-                    break;
-                case "mtl":
-                case "yul":
-                    if ($apiCluster["Network"] === "production") {
-                        $region = Cluster::REGION_YUL1_PROD1;
-                        break;
-                    } else {
-                        $region = Cluster::REGION_YUL1_DEV1;
-                        break;
-                    }
-                default:
-                    // Ignore this cluster.
-                    continue 2;
+            try {
+                $regionID = self::getRegionIDFromOrch($apiCluster["CloudZone"], $apiCluster["Network"]);
+                $cluster = new OrchCluster($apiCluster["ClusterID"], $regionID, $apiCluster["ApiToken"]);
+                $result[$cluster->getClusterID()] = $cluster;
+            } catch (InvalidRegionException $e) {
+                // Ignore these ones.
+                continue;
             }
-
-            $cluster = new OrchCluster($apiCluster["ClusterID"], $region, $apiCluster["ApiToken"]);
-            $result[$cluster->getClusterID()] = $cluster;
         }
 
         return $result;
+    }
+
+    /**
+     * Given an orchestration zone and a network determine the regionID.
+     *
+     * @param string $orchCloudZone
+     * @param string $orchNetwork
+     * @return string
+     */
+    public static function getRegionIDFromOrch(string $orchCloudZone, string $orchNetwork): string
+    {
+        switch ($orchCloudZone) {
+            case "sfo":
+            case "sjc":
+                return Cluster::REGION_SJC1_PROD1;
+            case "ams":
+            case "ams-1":
+                return Cluster::REGION_AMS1_PROD1;
+            case "mtl":
+            case "yul":
+                if ($orchNetwork === "production") {
+                    return Cluster::REGION_YUL1_PROD1;
+                } else {
+                    return Cluster::REGION_YUL1_DEV1;
+                }
+            default:
+                throw new InvalidRegionException("cloudZone: {$orchCloudZone}, network: $orchNetwork");
+        }
     }
 
     /**
