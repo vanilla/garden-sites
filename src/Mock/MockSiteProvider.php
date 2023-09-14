@@ -81,6 +81,6 @@ class MockSiteProvider extends SiteProvider
      */
     protected function loadAllClusters(): array
     {
-        return [MockSite::MOCK_CLUSTER_ID => new LocalCluster(MockSite::MOCK_CLUSTER_ID)];
+        return [MockSite::MOCK_CLUSTER_ID => new MockCluster(MockSite::MOCK_CLUSTER_ID)];
     }
 }
