@@ -35,7 +35,8 @@ class SiteHttpClient extends HttpClient
 
         $this->setBaseUrl($this->getBaseUrl());
         $this->setDefaultHeader("content-type", "application/json");
-        $this->setDefaultOption("timeout", 2);
+        $this->setDefaultOption("timeout", 20);
+        $this->setThrowExceptions(true);
     }
 
     /**
