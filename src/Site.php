@@ -53,6 +53,16 @@ abstract class Site implements \JsonSerializable
     abstract protected function loadSiteConfig(): array;
 
     /**
+     * Return if a site is in an active state.
+     *
+     * @return bool
+     */
+    public function isActive(): bool
+    {
+        return $this->getConfigValueByKey("Vanilla.isActive", true);
+    }
+
+    /**
      * Get a site's ID.
      *
      * @return int

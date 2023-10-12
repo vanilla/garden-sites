@@ -175,6 +175,10 @@ class OrchSiteProvider extends SiteProvider
                 ArrayUtils::setByPath("Inf.SearchApi.Secret", $config, $kludgedEsSecret);
             }
 
+            // Kludged active state
+            $state = $responseBody["context"]["site"]["state"] ?? null;
+            ArrayUtils::setByPath("Garden.isActive", $config, $state === "active");
+
             return $config;
         });
 
