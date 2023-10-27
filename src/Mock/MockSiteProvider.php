@@ -16,7 +16,7 @@ use Symfony\Component\Cache\Adapter\NullAdapter;
 /**
  * A Mock LocalSiteProvider for testing purposes.
  *
- * @extends SiteProvider<MockSite, LocalCluster>
+ * @extends SiteProvider<MockSite, MockCluster>
  */
 class MockSiteProvider extends SiteProvider
 {

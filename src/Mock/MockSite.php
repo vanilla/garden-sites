@@ -14,7 +14,7 @@ use Garden\Utils\ArrayUtils;
 /**
  * A mock local site for testing purposes.
  *
- * @extends Site<MockSite, LocalCluster>
+ * @extends Site<MockSite, MockCluster>
  */
 class MockSite extends Site
 {
