@@ -230,9 +230,8 @@ abstract class Site implements \JsonSerializable
                 return "https://yul1-dev1-vanillasearch-api.v-fabric.net";
             case Cluster::REGION_YUL1_PROD1:
             case Cluster::REGION_SJC1_PROD1: // Temporarily using the YUL prod instance until https://higherlogic.atlassian.net/browse/PV-229 is completed.
+            case Cluster::REGION_AMS1_PROD1: // Temporarily using YUL prod instance into AMS is re-provisioned https://higherlogic.atlassian.net/browse/PV-323
                 return "https://yul1-vanillasearch-prod1-api.v-fabric.net";
-            case Cluster::REGION_AMS1_PROD1:
-                return "https://ms-vanilla-search-api-ams.v-fabric.net";
             default:
                 throw new InvalidRegionException($this->getCluster()->getRegionID());
         }
