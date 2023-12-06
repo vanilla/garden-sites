@@ -16,6 +16,9 @@ use PHPUnit\Framework\TestCase;
 class MockSitesTest extends TestCase
 {
     /**
+     * Test that instances of a `MockSite` are shared and not copied.
+     * Additionallity test reading values from a site.
+     *
      * @return void
      */
     public function testSharedInstances()
@@ -36,6 +39,8 @@ class MockSitesTest extends TestCase
     }
 
     /**
+     * Test various methods for fetching filtered lists of sites.
+     *
      * @return void
      */
     public function testGetSitesFiltered()
