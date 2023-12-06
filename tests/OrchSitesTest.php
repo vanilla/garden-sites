@@ -12,7 +12,6 @@ use Garden\Http\Mocks\MockHttpHandler;
 use Garden\Sites\Clients\OrchHttpClient;
 use Garden\Sites\Cluster;
 use Garden\Sites\FileUtils;
-use Garden\Sites\Orch\OrchCluster;
 use Garden\Sites\Orch\OrchSiteProvider;
 use Garden\Sites\Tests\Fixtures\ExpectedSite;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
@@ -94,6 +93,7 @@ class OrchSitesTest extends BaseSitesTestCase
                 "cl10001",
                 "https://test.vanilla.community/hub",
                 $commonConfigs,
+                100,
             ))->expectRegion(Cluster::REGION_YUL1_DEV1),
 
             4000002 => (new ExpectedSite(
@@ -102,6 +102,7 @@ class OrchSitesTest extends BaseSitesTestCase
                 "cl10001",
                 "https://test.vanilla.community/node1",
                 $commonConfigs,
+                100,
             ))->expectRegion(Cluster::REGION_YUL1_DEV1),
             4000003 => (new ExpectedSite(
                 4000003,

@@ -19,6 +19,8 @@ class SiteRecord implements \JsonSerializable
 
     private int $accountID;
 
+    private ?int $multisiteID;
+
     private string $clusterID;
 
     private string $baseUrl;
@@ -29,10 +31,11 @@ class SiteRecord implements \JsonSerializable
      * @param string $clusterID
      * @param string $baseUrl
      */
-    public function __construct(int $siteID, int $accountID, string $clusterID, string $baseUrl)
+    public function __construct(int $siteID, int $accountID, ?int $multisiteID, string $clusterID, string $baseUrl)
     {
         $this->siteID = $siteID;
         $this->accountID = $accountID;
+        $this->multisiteID = $multisiteID;
         $this->clusterID = $clusterID;
         $this->baseUrl = $baseUrl;
     }
@@ -51,6 +54,23 @@ class SiteRecord implements \JsonSerializable
     public function getAccountID(): int
     {
         return $this->accountID;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getMultisiteID(): ?int
+    {
+        return $this->multisiteID;
+    }
+
+    /**
+     * @param int|null $multisiteID
+     * @return void
+     */
+    public function setMultisiteID(?int $multisiteID): void
+    {
+        $this->multisiteID = $multisiteID;
     }
 
     /**

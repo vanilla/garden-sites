@@ -131,6 +131,46 @@ abstract class SiteProvider
     }
 
     /**
+     * Get a list of sites associated with a particular account.
+     *
+     * @return TSite[]
+     */
+    public function getSitesByAccountID(int $accountID): array
+    {
+        /** @var TSite[] $sites */
+        $sites = [];
+
+        foreach ($this->getSites() as $site) {
+            if ($site->getAccountID() === $accountID) {
+                $sites[] = $site;
+            }
+        }
+
+        return $sites;
+    }
+
+    /**
+     * Get a list of sites associated with a hub/node.
+     *
+     * @param int $multisiteID
+     *
+     * @return TSite[]
+     */
+    public function getSitesByMultisiteID(int $multisiteID): array
+    {
+        /** @var TSite[] $sites */
+        $sites = [];
+
+        foreach ($this->getSites() as $site) {
+            if ($site->getMultisiteID() === $multisiteID) {
+                $sites[] = $site;
+            }
+        }
+
+        return $sites;
+    }
+
+    /**
      * @return array<int, TSite>
      */
     public function getSites(): array

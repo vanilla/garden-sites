@@ -75,7 +75,16 @@ class LocalSiteProvider extends SiteProvider
                     continue;
                 }
 
-                $siteRecord = new SiteRecord($siteID, $accountID, $clusterID, $baseUrl);
+                if (ArrayUtils::getByPath("EnabledPlugins.sitehubshared", $config) === true) {
+                    // we are a hub/node site.
+                    // Let's generate a multisiteID from the baseUrl
+                    $domain = parse_url($baseUrl, PHP_URL_HOST);
+                    $multisiteID = crc32($domain);
+                } else {
+                    $multisiteID = null;
+                }
+
+                $siteRecord = new SiteRecord($siteID, $accountID, $multisiteID, $clusterID, $baseUrl);
                 $configPath = str_replace($this->siteConfigFsBasePath, "", $configPath);
                 $siteRecord->setExtra("configPath", $configPath);
 
