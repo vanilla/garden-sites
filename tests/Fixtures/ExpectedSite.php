@@ -29,9 +29,15 @@ class ExpectedSite extends SiteRecord
      * @param string $baseUrl
      * @param array $expectedConfigs
      */
-    public function __construct(int $siteID, int $accountID, string $clusterID, string $baseUrl, array $expectedConfigs)
-    {
-        parent::__construct($siteID, $accountID, $clusterID, $baseUrl);
+    public function __construct(
+        int $siteID,
+        int $accountID,
+        string $clusterID,
+        string $baseUrl,
+        array $expectedConfigs,
+        ?int $multisiteID = null
+    ) {
+        parent::__construct($siteID, $accountID, $multisiteID, $clusterID, $baseUrl);
         $this->expectedConfigs = $expectedConfigs;
     }
 
@@ -65,6 +71,7 @@ class ExpectedSite extends SiteRecord
         TestCase::assertEquals($this->getAccountID(), $site->getAccountID(), "Expected accountID {$suffix}.");
         TestCase::assertEquals($this->getClusterID(), $site->getClusterID(), "Expected clusterID {$suffix}.");
         TestCase::assertEquals($this->getBaseUrl(), $site->getBaseUrl(), "Expected baseUrl {$suffix}.");
+        TestCase::assertEquals($this->getMultisiteID(), $site->getMultisiteID(), "Expected multisiteID {$suffix}.");
     }
 
     /**

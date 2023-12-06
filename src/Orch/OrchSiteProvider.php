@@ -58,6 +58,7 @@ class OrchSiteProvider extends SiteProvider
             $site = new SiteRecord(
                 $apiSite["siteid"],
                 $apiSite["accountid"],
+                $apiSite["multisiteid"],
                 $apiSite["cluster"],
                 "https://" . $apiSite["baseurl"],
             );

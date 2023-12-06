@@ -8,7 +8,6 @@ namespace Garden\Sites\Tests;
 
 use Garden\Sites\Exceptions\ConfigLoadingException;
 use Garden\Sites\Local\LocalSiteProvider;
-use Garden\Sites\SiteProvider;
 use Garden\Sites\Tests\Fixtures\ExpectedSite;
 
 /**
@@ -21,6 +20,9 @@ class LocalSitesTest extends BaseSitesTestCase
     const SID_E2E = 102;
     const SID_NO_SYS_TOKEN = 103;
     const SID_OTHER_CLUSTER = 105;
+
+    const SID_HUB = 10000;
+    const SID_NODE1 = 10001;
 
     /**
      * @return array<int, ExpectedSite>
@@ -73,6 +75,22 @@ class LocalSitesTest extends BaseSitesTestCase
                 $commonConfig + [
                     "ClusterConfig.SomeKey" => "cluster2",
                 ],
+            ),
+            self::SID_HUB => new ExpectedSite(
+                self::SID_HUB,
+                10000,
+                "cl00000",
+                "http://vanilla.localhost/hub",
+                $commonConfig + [],
+                294952213, // crc32(vanilla.localhost)
+            ),
+            self::SID_NODE1 => new ExpectedSite(
+                self::SID_NODE1,
+                10000,
+                "cl00000",
+                "http://vanilla.localhost/node1",
+                $commonConfig + [],
+                294952213, // crc32(vanilla.localhost)
             ),
         ];
     }

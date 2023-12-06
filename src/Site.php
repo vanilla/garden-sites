@@ -72,6 +72,16 @@ abstract class Site implements \JsonSerializable
         return $this->siteRecord->getAccountID();
     }
 
+    /**
+     * Get the multisiteID for the site. Only hub/node sites have a multisiteID.
+     *
+     * @return int|null
+     */
+    public function getMultisiteID(): ?int
+    {
+        return $this->siteRecord->getMultisiteID();
+    }
+
     /** Get the id of the cluster this site runs on.
      *
      * @return string

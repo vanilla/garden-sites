@@ -36,23 +36,26 @@ class MockSite extends Site
      * @param int $siteID
      * @param array $config
      * @param string $clusterID
-     * @param MockSiteProvider|null $mockSiteProvider
+     * @param int $accountID
+     * @param int|null $multisiteID
      */
     public function __construct(
         string $baseUrl,
         int $siteID = MockSiteProvider::MOCK_SITE_ID,
         array $config = [],
         string $clusterID = self::MOCK_CLUSTER_ID,
-        MockSiteProvider $mockSiteProvider = null
+        int $accountID = 1,
+        ?int $multisiteID = null
     ) {
         $this->baseUrl = $baseUrl;
         $this->config = $config;
-        $siteRecord = new SiteRecord($siteID, 0, $clusterID, $baseUrl);
+        $siteRecord = new SiteRecord($siteID, $accountID, $multisiteID, $clusterID, $baseUrl);
         parent::__construct($siteRecord, new MockSiteProvider());
         $this->generateKey();
         $this->setSystemToken("test123");
         $this->setConfigs([
-            "Vanilla.AccountID" => 1,
+            "Vanilla.AccountID" => $accountID,
+            "Vanilla.SiteID" => $siteID,
             "queue.disableFeedback" => true,
         ]);
     }
