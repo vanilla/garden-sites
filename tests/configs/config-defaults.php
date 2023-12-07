@@ -1,0 +1,2 @@
+<?php
+$Configuration["DefaultConfig"] = "foo";

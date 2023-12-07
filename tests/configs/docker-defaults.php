@@ -1,0 +1,2 @@
+<?php
+$Configuration["DockerConfig"] = "bar";
