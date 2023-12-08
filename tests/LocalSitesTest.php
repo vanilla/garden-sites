@@ -32,6 +32,8 @@ class LocalSitesTest extends BaseSitesTestCase
         $commonConfig = [
             "Config1" => "val1",
             "Nested.Nested1" => "valnested1",
+            "DefaultConfig" => "foo",
+            "DockerConfig" => "bar",
         ];
         return [
             self::SID_CFG_PHP => new ExpectedSite(

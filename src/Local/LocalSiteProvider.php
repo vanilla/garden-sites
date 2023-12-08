@@ -25,7 +25,7 @@ class LocalSiteProvider extends SiteProvider
     const CONF_ACCOUNT_ID = "Vanilla.AccountID";
     const CONF_SITE_ID = "Vanilla.SiteID";
 
-    private string $siteConfigFsBasePath;
+    public string $siteConfigFsBasePath;
 
     /**
      * @param string $siteConfigFsBasePath

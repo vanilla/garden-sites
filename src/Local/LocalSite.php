@@ -41,6 +41,16 @@ class LocalSite extends Site
      */
     protected function loadSiteConfig(): array
     {
+        // Config defaults
+        $configDefaults = $this->siteProvider->loadPhpConfigFile(
+            $this->siteProvider->siteConfigFsBasePath . "/config-defaults.php",
+        );
+
+        $dockerDefaultsPath = $this->siteProvider->siteConfigFsBasePath . "/docker-defaults.php";
+        $dockerDefaults = file_exists($dockerDefaultsPath)
+            ? $this->siteProvider->loadPhpConfigFile($dockerDefaultsPath)
+            : [];
+
         try {
             $clusterConfigPath = "/clusters/" . $this->getClusterID() . ".php";
             $clusterConfig = $this->siteProvider->loadPhpConfigFile($clusterConfigPath);
@@ -50,9 +60,18 @@ class LocalSite extends Site
 
         $siteConfig = $this->siteProvider->loadPhpConfigFile($this->configPath);
 
-        $config = ArrayUtils::mergeRecursive($clusterConfig, $siteConfig, function ($a, $b) {
-            return $b;
-        });
-        return $config;
+        $configs = [$configDefaults, $dockerDefaults, $clusterConfig, $siteConfig];
+
+        $finalConfig = array_reduce(
+            $configs,
+            function (array $acc, array $new) {
+                return ArrayUtils::mergeRecursive($acc, $new, function ($a, $b) {
+                    return $b;
+                });
+            },
+            [],
+        );
+
+        return $finalConfig;
     }
 }
