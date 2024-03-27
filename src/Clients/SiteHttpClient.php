@@ -78,7 +78,7 @@ class SiteHttpClient extends HttpClient
                 "content-type" => "application/system+jwt",
             ],
             [
-                "timeout" => 25,
+                "timeout" => 30,
                 "throw" => false,
             ],
         );
