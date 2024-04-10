@@ -131,6 +131,33 @@ class OrchSitesTest extends BaseSitesTestCase
     }
 
     /**
+     * Overridden because we use the haproxies.
+     * @param ExpectedSite $expectedSite
+     *
+     * @return void
+     * @dataProvider provideExpectedSites
+     */
+    public function testSiteClientBaseUrl(ExpectedSite $expectedSite)
+    {
+        $provider = $this->siteProvider();
+        $provider->setRegionIDs([$expectedSite->expectedRegionID]);
+        $site = $provider->getSite($expectedSite->getSiteID());
+        $siteClient = $site->httpClient();
+        $siteClient->setThrowExceptions(false);
+
+        $mockHandler = new MockHttpHandler();
+        $siteClient->setHandler($mockHandler);
+
+        // Base URL is added.
+        $response = $siteClient->get("/hello-world");
+        $this->assertEquals(
+            $site->replaceHostnameInUrl("{$expectedSite->getBaseUrl()}/hello-world"),
+            $response->getRequest()->getUrl(),
+        );
+        $this->assertEquals($expectedSite->getBaseUri()->getHost(), $response->getRequest()->getHeader("host"));
+    }
+
+    /**
      * @inheritDoc
      */
     public function provideExpectedSites(): iterable

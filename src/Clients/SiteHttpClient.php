@@ -68,7 +68,7 @@ class SiteHttpClient extends HttpClient
     /**
      * Run a callback payload from a long-runner response.
      */
-    public function runCallbackPayload(string $callbackPayload): HttpResponse
+    public function runCallbackPayload(string $callbackPayload, array $options = []): HttpResponse
     {
         // Clear the default auth header.
         $response = $this->withNoAuth()->post(
@@ -77,10 +77,13 @@ class SiteHttpClient extends HttpClient
             [
                 "content-type" => "application/system+jwt",
             ],
-            [
-                "timeout" => 30,
-                "throw" => false,
-            ],
+            array_merge(
+                [
+                    "timeout" => 30,
+                    "throw" => false,
+                ],
+                $options,
+            ),
         );
         return $response;
     }

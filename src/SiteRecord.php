@@ -7,6 +7,8 @@
 namespace Garden\Sites;
 
 use Garden\Utils\ArrayUtils;
+use Psr\Http\Message\UriInterface;
+use Slim\Psr7\Factory\UriFactory;
 
 /**
  * Class holding a minimum of amount of data identifying a site.
@@ -87,6 +89,15 @@ class SiteRecord implements \JsonSerializable
     public function getBaseUrl(): string
     {
         return $this->baseUrl;
+    }
+
+    /**
+     * @return UriInterface
+     */
+    public function getBaseUri(): UriInterface
+    {
+        $uriFactory = new UriFactory();
+        return $uriFactory->createUri($this->getBaseUrl());
     }
 
     /**
