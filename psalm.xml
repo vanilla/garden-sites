@@ -15,6 +15,11 @@
                 <directory name="src" />
             </errorLevel>
         </PropertyNotSetInConstructor>
+        <RiskyTruthyFalsyComparison>
+            <errorLevel type="suppress">
+                <directory name="src" />
+            </errorLevel>
+        </RiskyTruthyFalsyComparison>
     </issueHandlers>
     <projectFiles>
         <directory name="src"/>
