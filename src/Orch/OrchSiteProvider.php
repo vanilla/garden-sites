@@ -6,11 +6,9 @@
 
 namespace Garden\Sites\Orch;
 
-use Garden\Http\CurlHandler;
 use Garden\Sites\Clients\OrchHttpClient;
 use Garden\Sites\Cluster;
 use Garden\Sites\Exceptions\ConfigLoadingException;
-use Garden\Sites\Exceptions\InvalidRegionException;
 use Garden\Sites\SiteProvider;
 use Garden\Sites\SiteRecord;
 use Garden\Utils\ArrayUtils;
@@ -86,14 +84,9 @@ class OrchSiteProvider extends SiteProvider
 
         $result = [];
         foreach ($apiClusters as $apiCluster) {
-            try {
-                $regionID = self::getRegionIDFromOrch($apiCluster["CloudZone"], $apiCluster["Network"]);
-                $cluster = new OrchCluster($apiCluster["ClusterID"], $regionID, $apiCluster["ApiToken"]);
-                $result[$cluster->getClusterID()] = $cluster;
-            } catch (InvalidRegionException $e) {
-                // Ignore these ones.
-                continue;
-            }
+            $regionID = self::getRegionIDFromOrch($apiCluster["CloudZone"], $apiCluster["Network"]);
+            $cluster = new OrchCluster($apiCluster["ClusterID"], $regionID, $apiCluster["ApiToken"]);
+            $result[$cluster->getClusterID()] = $cluster;
         }
 
         return $result;
@@ -123,7 +116,8 @@ class OrchSiteProvider extends SiteProvider
                     return Cluster::REGION_YUL1_DEV1;
                 }
             default:
-                throw new InvalidRegionException("cloudZone: {$orchCloudZone}, network: $orchNetwork");
+                // new clusters have sane names
+                return $orchCloudZone;
         }
     }
 
