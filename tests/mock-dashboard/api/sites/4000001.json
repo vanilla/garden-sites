@@ -1,0 +1,23 @@
+{
+    "site": {
+        "siteID": 4000001,
+        "accountID": 50000,
+        "regionID": "yul1-dev1",
+        "clusterID": "cl10001",
+        "baseUrl": "https://test.vanilla.community/hub",
+        "internalBaseUrl": "http://haproxy-router.yul1-routing-dev1.vanilladev.com/hub",
+        "internalHeaders": {
+            "Host": "test.vanilla.community"
+        },
+        "name": "test-hub.vanillatesting.com",
+        "state": "active",
+        "database": "db1",
+        "multisiteID": null
+    },
+    "systemAccessToken": "systemaccess",
+    "config": {
+        "allsite": {
+            "havethis": "everyone"
+        }
+    }
+}

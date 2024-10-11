@@ -27,7 +27,7 @@
     "require": {
         "vanilla/garden-http": "^2.8",
         "ext-json": "*",
-        "php": ">=7.4",
+        "php": ">=8.0",
         "vanilla/garden-utils": "^1.0.1",
         "symfony/cache-contracts": "^2.5"
     }

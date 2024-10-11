@@ -47,13 +47,13 @@ The orch site provider loads sites and clusters from a remote orchestration http
 ```php
 use Garden\Sites\Clients\OrchHttpClient;
 use Garden\Sites\Orch\OrchSiteProvider;
-use Garden\Sites\Orch\OrchCluster;
+use Garden\Sites\Orch\DashboardCluster;
 use Symfony\Component\Cache\Adapter\MemcachedAdapter;
 use Symfony\Component\Cache\Adapter\RedisAdapter;
 use Symfony\Contracts\Cache\CacheInterface;
 
 $orchHttpClient = new OrchHttpClient("https://orch.vanilla.localhost", "access-token-here");
-$siteProvider = new OrchSiteProvider($orchHttpClient, [OrchCluster::REGION_AMS1_PROD1]);
+$siteProvider = new OrchSiteProvider($orchHttpClient, [DashboardCluster::REGION_AMS1_PROD1]);
 
 // It is highly recommended to set a user-agent for network requests.
 $siteProvider->setUserAgent("my-service:1.0");
@@ -71,7 +71,7 @@ $cache = new MemcachedAdapter(/** Configuration here. */);
 $siteProvider->setCache($cache);
 
 # Region can be changed later
-$siteProvider->setRegionIDs([OrchCluster::REGION_YUL1_PROD1, OrchCluster::REGION_AMS1_PROD1]);
+$siteProvider->setRegionIDs([DashboardCluster::REGION_YUL1_PROD1, DashboardCluster::REGION_AMS1_PROD1]);
 ```
 
 The orchestration provider needs to be configured with an authenticated `OrchHttpClient` and a region/network to load sites from.
