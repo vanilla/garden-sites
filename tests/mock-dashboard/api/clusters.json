@@ -1,0 +1,20 @@
+[
+    {
+        "clusterID": "cl10001",
+        "name": "Ops Dev Cluster",
+        "tag": "Ops Dev Cluster",
+        "regionID": "yul1-dev1"
+    },
+    {
+        "clusterID": "cl40011",
+        "name": "MTL Prio 1",
+        "tag": "Priority 1",
+        "regionID": "yul1-prod1"
+    },
+    {
+        "clusterID": "cl40015",
+        "name": "AMS PRIO 1",
+        "tag": "Priority 1",
+        "regionID": "ams1-prod1"
+    }
+]

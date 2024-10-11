@@ -9,8 +9,10 @@ namespace Garden\Sites\Tests;
 use Garden\Http\HttpRequest;
 use Garden\Http\HttpResponse;
 use Garden\Http\Mocks\MockHttpHandler;
+use Garden\Sites\Clients\DashboardHttpClient;
 use Garden\Sites\Clients\OrchHttpClient;
 use Garden\Sites\Cluster;
+use Garden\Sites\Dashboard\DashboardSiteProvider;
 use Garden\Sites\FileUtils;
 use Garden\Sites\Orch\OrchSiteProvider;
 use Garden\Sites\SiteProvider;
@@ -20,7 +22,7 @@ use Symfony\Component\Cache\Adapter\ArrayAdapter;
 /**
  * Tests for sites loaded from orchestration.
  */
-class OrchSitesTest extends BaseSitesTestCase
+class DashboardSitesTest extends BaseSitesTestCase
 {
     private ?MockHttpHandler $mockHandler = null;
 
@@ -34,23 +36,23 @@ class OrchSitesTest extends BaseSitesTestCase
     }
 
     /**
-     * Create a mocked {@link OrchSiteProvider}.
+     * Create a mocked {@link DashboardSiteProvider}.
      *
-     * Network requests are mocked from /tests/mock-orch
+     * Network requests are mocked from /tests/mock-dashboard
      *
-     * @return OrchSiteProvider
+     * @return DashboardSiteProvider
      */
-    public function siteProvider(): OrchSiteProvider
+    public function siteProvider(): DashboardSiteProvider
     {
-        $baseUrl = "https://orch.vanilla.localhost";
-        $orchClient = new OrchHttpClient($baseUrl, "tokenhere");
+        $baseUrl = "https://dashboard.vanilla.localhost";
+        $dashboardClient = new DashboardHttpClient($baseUrl, "tokenhere");
         if ($this->mockHandler === null) {
             $this->fail("Mock handler wasn't configured");
         }
-        $orchClient->setHandler($this->mockHandler);
-        $orchProvider = new OrchSiteProvider($orchClient, [Cluster::REGION_YUL1_DEV1]);
+        $dashboardClient->setHandler($this->mockHandler);
+        $dashboardProvider = new DashboardSiteProvider($dashboardClient, [Cluster::REGION_YUL1_DEV1]);
 
-        $requestRoot = __DIR__ . "/mock-orch";
+        $requestRoot = __DIR__ . "/mock-dashboard";
         $requestPaths = iterator_to_array(FileUtils::iterateFiles($requestRoot, "/.*\.json$/"));
         foreach ($requestPaths as $rawRequestPath) {
             $requestPath = str_replace([$requestRoot, ".json"], "", $rawRequestPath);
@@ -63,7 +65,37 @@ class OrchSitesTest extends BaseSitesTestCase
             );
         }
 
-        return $orchProvider;
+        return $dashboardProvider;
+    }
+
+    /**
+     * Overridden because we use the haproxies.
+     * @param ExpectedSite $expectedSite
+     *
+     * @return void
+     * @dataProvider provideExpectedSites
+     */
+    public function testSiteClientBaseUrl(ExpectedSite $expectedSite)
+    {
+        $provider = $this->siteProvider();
+        $provider->setRegionIDs([$expectedSite->expectedRegionID]);
+        $site = $provider->getSite($expectedSite->getSiteID());
+        $siteClient = $site->httpClient();
+        $siteClient->setThrowExceptions(false);
+
+        $mockHandler = new MockHttpHandler();
+        $siteClient->setHandler($mockHandler);
+
+        // Base URL is added.
+        $siteDetails = $provider->getSiteDetails($expectedSite->getSiteID());
+        $expectedBaseUrl = $siteDetails["site"]["internalBaseUrl"];
+
+        $response = $siteClient->get("/hello-world");
+        $this->assertEquals("{$expectedBaseUrl}/hello-world", $response->getRequest()->getUrl());
+        $this->assertEquals(
+            $siteDetails["site"]["internalHeaders"]["Host"],
+            $response->getRequest()->getHeader("host"),
+        );
     }
 
     /**
@@ -75,9 +107,6 @@ class OrchSitesTest extends BaseSitesTestCase
     {
         $commonConfigs = [
             "allsite.havethis" => "everyone",
-            "ReplaceByCluster" => [1, 2, 3],
-            "MergeWithCluster.a" => 1,
-            "MergeWithCluster.c" => 2,
         ];
 
         return [
@@ -129,33 +158,6 @@ class OrchSitesTest extends BaseSitesTestCase
                 ->expectNoSystemToken()
                 ->expectRegion(Cluster::REGION_YUL1_DEV1),
         ];
-    }
-
-    /**
-     * Overridden because we use the haproxies.
-     * @param ExpectedSite $expectedSite
-     *
-     * @return void
-     * @dataProvider provideExpectedSites
-     */
-    public function testSiteClientBaseUrl(ExpectedSite $expectedSite)
-    {
-        $provider = $this->siteProvider();
-        $provider->setRegionIDs([$expectedSite->expectedRegionID]);
-        $site = $provider->getSite($expectedSite->getSiteID());
-        $siteClient = $site->httpClient();
-        $siteClient->setThrowExceptions(false);
-
-        $mockHandler = new MockHttpHandler();
-        $siteClient->setHandler($mockHandler);
-
-        // Base URL is added.
-        $response = $siteClient->get("/hello-world");
-        $this->assertEquals(
-            $site->replaceHostnameInUrl("{$expectedSite->getBaseUrl()}/hello-world"),
-            $response->getRequest()->getUrl(),
-        );
-        $this->assertEquals($expectedSite->getBaseUri()->getHost(), $response->getRequest()->getHeader("host"));
     }
 
     /**
@@ -217,7 +219,7 @@ class OrchSitesTest extends BaseSitesTestCase
         $this->expectedSites()[100]->assertMatchesSite($site);
 
         // Now if we reset the mock we should be using the cache.
-        $provider->getOrchHttpClient()->setHandler(new MockHttpHandler());
+        $provider->getDashboardHttpClient()->setHandler(new MockHttpHandler());
         $site = $provider->getSite(100);
         $this->expectedSites()[100]->assertMatchesSite($site);
 
@@ -240,7 +242,7 @@ class OrchSitesTest extends BaseSitesTestCase
         $this->assertEquals("cl10001", $cluster->getClusterID());
 
         // Now if we reset the mock we should be using the cache.
-        $provider->getOrchHttpClient()->setHandler(new MockHttpHandler());
+        $provider->getDashboardHttpClient()->setHandler(new MockHttpHandler());
         $cluster = $provider->getCluster("cl10001");
         $this->assertEquals("cl10001", $cluster->getClusterID());
 
@@ -259,6 +261,8 @@ class OrchSitesTest extends BaseSitesTestCase
         $provider->setUserAgent("hello-user");
 
         $site1Client = $provider->getSite(100)->httpClient();
+
+        $request = $site1Client->get("/hello", [], [], ["throw" => false])->getRequest();
         $this->assertEquals(
             "hello-user",
             $site1Client
@@ -270,7 +274,7 @@ class OrchSitesTest extends BaseSitesTestCase
         $this->assertEquals(
             "hello-user",
             $provider
-                ->getOrchHttpClient()
+                ->getDashboardHttpClient()
                 ->get("/test", [], [], ["throw" => false])
                 ->getRequest()
                 ->getHeader("user-agent"),

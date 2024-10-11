@@ -11,7 +11,6 @@ use Garden\Http\HttpHandlerInterface;
 use Garden\Sites\Clients\SiteHttpClient;
 use Garden\Sites\Exceptions\BadApiCredentialsException;
 use Garden\Sites\Exceptions\ClusterNotFoundException;
-use Garden\Sites\Exceptions\InvalidRegionException;
 use Garden\Utils\ArrayUtils;
 
 /**
@@ -218,7 +217,7 @@ abstract class Site implements \JsonSerializable
             case Cluster::REGION_SJC1_PROD1:
                 return "https://sjc1-vanillaqueue-prod1.v-fabric.net";
             default:
-                throw new InvalidRegionException($this->getCluster()->getRegionID());
+                return "http://web.vanilla-queue.service.consul";
         }
     }
 
@@ -243,7 +242,7 @@ abstract class Site implements \JsonSerializable
             case Cluster::REGION_AMS1_PROD1: // Temporarily using YUL prod instance into AMS is re-provisioned https://higherlogic.atlassian.net/browse/PV-323
                 return "https://yul1-vanillasearch-prod1-api.v-fabric.net";
             default:
-                throw new InvalidRegionException($this->getCluster()->getRegionID());
+                return "http://web.vanilla-search.service.consul";
         }
     }
 }

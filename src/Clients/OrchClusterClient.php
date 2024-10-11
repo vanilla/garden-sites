@@ -16,7 +16,12 @@ class OrchClusterClient extends HttpClient
 {
     public function __construct(OrchCluster $cluster)
     {
-        parent::__construct("https://data.{$cluster->getClusterID()}.vanilladev.com");
+        $clusterId = $cluster->getClusterID();
+        $url = preg_match("/^cl[123456]00[0-9]{2}$/", $clusterId)
+            ? "https://data.{$clusterId}.vanilladev.com"
+            : "http://data.{$clusterId}.service.consul";
+
+        parent::__construct($url);
         $this->setDefaultHeaders([
             "X-Access-Token" => $cluster->getSecret(),
             "Content-Type" => "application/json",
