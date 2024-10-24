@@ -127,7 +127,7 @@ abstract class Site implements \JsonSerializable
      * @param mixed|null $fallback Fallback value.
      * @return mixed
      */
-    public function getConfigValueByKey(string $configKey, $fallback = null)
+    public function getConfigValueByKey(string $configKey, mixed $fallback = null): mixed
     {
         if ($this->configCache === null) {
             $this->configCache = $this->loadSiteConfig();

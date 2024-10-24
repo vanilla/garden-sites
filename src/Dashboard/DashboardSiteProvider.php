@@ -57,6 +57,7 @@ class DashboardSiteProvider extends SiteProvider
         $apiSites = $this->dashboardHttpClient
             ->get("/api/sites", [
                 "regionID" => $this->regionIDs,
+                "siteState" => "active",
             ])
             ->getBody();
 
