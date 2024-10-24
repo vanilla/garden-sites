@@ -1,0 +1,62 @@
+[
+    {
+        "siteID": 100,
+        "accountID": 100,
+        "regionID": "yul1-dev1",
+        "clusterID": "cl10001",
+        "baseUrl": "https://site1.vanillatesting.com",
+        "internalBaseUrl": "http://haproxy-router.yul1-routing-dev1.vanilladev.com",
+        "internalHeaders": {
+            "Host": "site1.vanillatesting.com"
+        },
+        "name": "site1.vanillatesting.com",
+        "state": "active",
+        "database": "dbe1",
+        "multisiteID": null
+    },
+    {
+        "siteID": 4000001,
+        "accountID": 50000,
+        "regionID": "yul1-dev1",
+        "clusterID": "cl10001",
+        "baseUrl": "https://test.vanilla.community/hub",
+        "internalBaseUrl": "http://haproxy-router.yul1-routing-dev1.vanilladev.com/hub",
+        "internalHeaders": {
+            "Host": "test.vanilla.community"
+        },
+        "name": "test-hub.vanillatesting.com",
+        "state": "active",
+        "database": "db1",
+        "multisiteID": 100
+    },
+    {
+        "siteID": 4000002,
+        "accountID": 50000,
+        "regionID": "yul1-dev1",
+        "clusterID": "cl10001",
+        "baseUrl": "https://test.vanilla.community/node1",
+        "internalBaseUrl": "http://haproxy-router.yul1-routing-dev1.vanilladev.com/node1",
+        "internalHeaders": {
+            "Host": "test.vanilla.community"
+        },
+        "name": "test-node1.vanillatesting.com",
+        "state": "active",
+        "database": "db1",
+        "multisiteID": 100
+    },
+    {
+        "siteID": 4000005,
+        "accountID": 70000,
+        "regionID": "yul1-dev1",
+        "clusterID": "cl10001",
+        "baseUrl": "https://no-system.vanilla.community",
+        "internalBaseUrl": "http://haproxy-router.yul1-routing-dev1.vanilladev.com",
+        "internalHeaders": {
+            "Host": "no-system.vanillatesting.com"
+        },
+        "name": "no-system.vanillatesting.com",
+        "state": "active",
+        "database": "db1",
+        "multisiteID": null
+    }
+]
