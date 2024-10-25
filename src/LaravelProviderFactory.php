@@ -41,7 +41,7 @@ class LaravelProviderFactory
                 self::ORCH_TYPE => ["required", "in:dashboard,orchestration"],
                 self::ORCH_LOCAL_DIRECTORY_PATH => ["string", "required"],
             ],
-            "default" => throw new \Exception("Unknown orch type: $orchType"),
+            default => throw new \Exception("Unknown orch type: $orchType"),
         };
 
         return [
