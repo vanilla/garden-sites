@@ -82,9 +82,6 @@ class OrchSite extends Site
     public function replaceHostnameInUrl(string $url): string
     {
         $clusterRouterHostname = $this->getClusterRouterHostname();
-        if ($clusterRouterHostname === null) {
-            return $url;
-        }
 
         $realHostname = $this->getRealHostName();
         $kludgedUrl = str_replace($realHostname, $clusterRouterHostname, $url);
@@ -103,9 +100,9 @@ class OrchSite extends Site
     }
 
     /**
-     * @return string|null
+     * @return string
      */
-    public function getClusterRouterHostname(): ?string
+    public function getClusterRouterHostname(): string
     {
         switch ($this->getCluster()->getRegionID()) {
             case Cluster::REGION_AMS1_PROD1:
@@ -116,8 +113,8 @@ class OrchSite extends Site
                 return "haproxy-router.yul1-routing-prod1.vanilladev.com";
             case Cluster::REGION_YUL1_DEV1:
                 return "haproxy-router.yul1-routing-dev1.vanilladev.com";
+            default:
+                return "http.haproxy.service.consul";
         }
-
-        return null;
     }
 }

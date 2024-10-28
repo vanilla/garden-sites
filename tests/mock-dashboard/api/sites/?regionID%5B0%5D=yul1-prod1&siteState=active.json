@@ -1,0 +1,17 @@
+[
+    {
+        "siteID": 4000003,
+        "accountID": 60000,
+        "regionID": "yul1-prod1",
+        "clusterID": "cl40011",
+        "baseUrl": "https://yul1.vanilla.community",
+        "internalBaseUrl": "http://haproxy-router.yul1-routing-prod1.vanilladev.com",
+        "internalHeaders": {
+            "Host": "yul1.vanillatesting.com"
+        },
+        "name": "yul1.vanillatesting.com",
+        "state": "active",
+        "database": "db1",
+        "multisiteID": null
+    }
+]

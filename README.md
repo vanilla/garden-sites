@@ -10,14 +10,51 @@ composer require vanilla/garden-sites
 
 ## Usage
 
-The entrypoint to usage of this library is through either the `Garden\Sites\LocalSiteProvider` or the `Garden\Sites\OrchSiteProvider`.
+The entrypoint to usage of this library is through either the `Garden\Sites\LocalSiteProvider`, `Garden\Sites\DashboardSiteProvider`, `Garden\Sites\OrchSiteProvider`.
+
+### Configuring in Laravel
+
+To configure this library in Laravel you need to setup the following 2 things.
+
+**conf/orch.php**
+
+```php
+use Garden\Sites\LaravelProviderFactory;
+
+// This will inject your env variables into laravel config.
+return LaravelProviderFactory::createLaravelConfigFromEnv("env");
+```
+
+**Usage in the app**
+
+```php
+use Garden\Sites\LaravelProviderFactory;use Garden\Sites\SiteProvider;
+
+/** @var SiteProvider $provider */
+$provider = LaravelProviderFactory::providerFromLaravelConfig([\Config::class, 'get'])
+
+/**
+ * Site providers do various caching of results. By default an in-memory cache is used, but especially with an orch-client
+ * it is recommended to configure a persistent cache like memcached or redis.
+ * Caches must implement {@link CacheInterface}
+ */
+
+$cache = new RedisAdapter(/** Configuration here. */);
+// or
+$cache = new MemcachedAdapter(/** Configuration here. */);
+
+$siteProvider->setCache($cache);
+```
 
 ### LocalSiteProvider
 
-```php
-use Garden\Sites\Local\LocalSiteProvider;
+This provider reads site configurations from a local directory. The provider is configured with a path to the directory containing the site configurations.
 
-$provider = new LocalSiteProvider("/path/to/site/configs");
+**.env**
+
+```env
+ORCH_TYPE="local"
+ORCH_LOCAL_DIRECTORY_PATH="/path/to/site/configs"
 ```
 
 Notably the path to the site configs must be a readable directory to the PHP process.
@@ -44,37 +81,36 @@ Cluster configurations may be added into the configs `/clusters` directory and a
 
 The orch site provider loads sites and clusters from a remote orchestration http server. Sites, clusters, and configs are cached for a 1 minute period.
 
-```php
-use Garden\Sites\Clients\OrchHttpClient;
-use Garden\Sites\Orch\OrchSiteProvider;
-use Garden\Sites\Orch\OrchCluster;
-use Symfony\Component\Cache\Adapter\MemcachedAdapter;
-use Symfony\Component\Cache\Adapter\RedisAdapter;
-use Symfony\Contracts\Cache\CacheInterface;
+**.env**
 
-$orchHttpClient = new OrchHttpClient("https://orch.vanilla.localhost", "access-token-here");
-$siteProvider = new OrchSiteProvider($orchHttpClient, [OrchCluster::REGION_AMS1_PROD1]);
-
-// It is highly recommended to set a user-agent for network requests.
-$siteProvider->setUserAgent("my-service:1.0");
-
-/**
- * Site providers do various caching of results. By default an in-memory cache is used, but especially with an orch-client
- * it is recommended to configure a persistent cache like memcached or redis.
- * Caches must implement {@link CacheInterface}
- */
-
-$cache = new RedisAdapter(/** Configuration here. */);
-// or
-$cache = new MemcachedAdapter(/** Configuration here. */);
-
-$siteProvider->setCache($cache);
-
-# Region can be changed later
-$siteProvider->setRegionIDs([OrchCluster::REGION_YUL1_PROD1, OrchCluster::REGION_AMS1_PROD1]);
+```env
+ORCH_TYPE="orchestration"
+ORCH_BASE_URL="https://orchestration.vanilladev.com"
+ORCH_TOKEN="SECRET_HERE"
+# Optional hostname to force for orchestration (Force Proxy from localhost)
+ORCH_HOSTNAME="ORCH_HOSTNAME";
+# CSV of region IDs to accept sites from.
+ORCH_REGION_IDS="yul1-prod1,sjc1-prod1";
+ORCH_USER_AGENT="my-service";
 ```
 
-The orchestration provider needs to be configured with an authenticated `OrchHttpClient` and a region/network to load sites from.
+### DashboardSiteProvider
+
+The orch site provider loads sites and clusters from a remote management-dashboard http server. Sites, clusters, and configs are cached for a 1 minute period.
+
+**.env**
+
+```env
+ORCH_TYPE="dashboard"
+ORCH_BASE_URL="https://management-dashboard.vanilladev.com"
+# JWT secret for management dashboard
+ORCH_TOKEN="SECRET_HERE"
+# Optional hostname to force for management dashboard (Force Proxy from localhost)
+ORCH_HOSTNAME="ORCH_HOSTNAME";
+# CSV of region IDs to accept sites from.
+ORCH_REGION_IDS="yul1-prod1,sjc1-prod1";
+ORCH_USER_AGENT="my-service";
+```
 
 ### Using site providers
 
