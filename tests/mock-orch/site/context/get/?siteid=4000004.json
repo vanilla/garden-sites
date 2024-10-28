@@ -22,8 +22,8 @@
             "allsite": {
                 "havethis": "everyone"
             },
-            "APIv2": {
-                "SystemAccessToken": "systemaccess"
+            "Context": {
+                "Secret": "systemaccess"
             },
             "ReplaceByCluster": [1, 2, 3],
             "MergeWithCluster": {

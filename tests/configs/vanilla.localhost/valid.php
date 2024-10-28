@@ -11,4 +11,4 @@ $Configuration["Vanilla"]["SiteID"] = 101;
 $Configuration["Vanilla"]["AccountID"] = 101;
 $Configuration["MergeWithMe"]["Key2"] = "val2";
 $Configuration["SomeArr"] = [3, 4, 5];
-$Configuration["APIv2"]["SystemAccessToken"] = "tokenhere";
+$Configuration["Context"]["Secret"] = "tokenhere";

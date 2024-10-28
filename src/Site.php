@@ -6,12 +6,15 @@
 
 namespace Garden\Sites;
 
+use Carbon\Carbon;
+use Firebase\JWT\JWT;
 use Garden\Http\CurlHandler;
 use Garden\Http\HttpHandlerInterface;
 use Garden\Sites\Clients\SiteHttpClient;
 use Garden\Sites\Exceptions\BadApiCredentialsException;
 use Garden\Sites\Exceptions\ClusterNotFoundException;
 use Garden\Utils\ArrayUtils;
+use Garden\Utils\ContextException;
 
 /**
  * Interface classes representing a site.
@@ -22,6 +25,7 @@ use Garden\Utils\ArrayUtils;
 abstract class Site implements \JsonSerializable
 {
     const CONF_SYSTEM_ACCESS_TOKEN = "APIv2.SystemAccessToken";
+    const CONF_JWT_SECRET = "Context.Secret";
 
     protected SiteRecord $siteRecord;
 
@@ -177,12 +181,23 @@ abstract class Site implements \JsonSerializable
      */
     public function getSystemAccessToken(): string
     {
-        $apiToken = $this->getConfigValueByKey(self::CONF_SYSTEM_ACCESS_TOKEN);
-        if (empty($apiToken)) {
-            throw new BadApiCredentialsException("Site did not have SystemAccessToken configured.");
+        $secret = $this->getConfigValueByKey(self::CONF_JWT_SECRET);
+        if ($secret === null) {
+            throw new BadApiCredentialsException("Secret not found in site config", 500, [
+                "siteID" => $this->getSiteID(),
+            ]);
         }
 
-        return $apiToken;
+        $token = JWT::encode(
+            [
+                "svc" => $this->siteProvider->getUserAgent(),
+                "iat" => time(),
+                "exp" => time() + 60 * 5,
+            ],
+            $secret,
+            "HS512",
+        );
+        return "vnla_sys.{$token}";
     }
 
     /**

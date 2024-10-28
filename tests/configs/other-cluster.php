@@ -10,4 +10,4 @@ $Configuration["Nested"]["Nested2"] = "valnested2";
 $Configuration["Vanilla"]["SiteID"] = 105;
 $Configuration["Vanilla"]["AccountID"] = 105;
 $Configuration["Vanilla"]["ClusterID"] = "cl00001";
-$Configuration["APIv2"]["SystemAccessToken"] = "tokenhere";
+$Configuration["Context"]["Secret"] = "tokenhere";
