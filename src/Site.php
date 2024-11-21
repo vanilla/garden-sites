@@ -232,7 +232,7 @@ abstract class Site implements \JsonSerializable
             case Cluster::REGION_SJC1_PROD1:
                 return "https://sjc1-vanillaqueue-prod1.v-fabric.net";
             default:
-                return "http://web.vanilla-queue.service.consul";
+                return "http://vanilla-queue.proxy.service.consul";
         }
     }
 
@@ -257,7 +257,7 @@ abstract class Site implements \JsonSerializable
             case Cluster::REGION_AMS1_PROD1: // Temporarily using YUL prod instance into AMS is re-provisioned https://higherlogic.atlassian.net/browse/PV-323
                 return "https://yul1-vanillasearch-prod1-api.v-fabric.net";
             default:
-                return "http://web.vanilla-search.service.consul";
+                return "http://vanilla-search.proxy.service.consul";
         }
     }
 }

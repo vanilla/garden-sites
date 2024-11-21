@@ -114,7 +114,7 @@ class OrchSite extends Site
             case Cluster::REGION_YUL1_DEV1:
                 return "haproxy-router.yul1-routing-dev1.vanilladev.com";
             default:
-                return "http.haproxy.service.consul";
+                return "vanilla.proxy.service.consul";
         }
     }
 }
