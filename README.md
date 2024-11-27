@@ -62,9 +62,9 @@ Notably the path to the site configs must be a readable directory to the PHP pro
 The local site provider works be reading php-based config files from a given directory. This reads all sites recognized by the `vnla docker` setup. For a site config to be recognized it must meet the following criteria
 
 -   The file has name matching one of the following patterns
-    -   `/*.php` - Becomes `*.vanilla.localhost`
-    -   `/vanilla.localhost/*.php` - Becomes `vanilla.localhost/*`
-    -   `/e2e-tests.vanilla.localhost/*.php` - Becomes `e2e-tests.vanilla.localhost/*`
+    -   `/*.php` - Becomes `*.vanilla.local`
+    -   `/vanilla.local/*.php` - Becomes `vanilla.local/*`
+    -   `/e2e-tests.vanilla.local/*.php` - Becomes `e2e-tests.vanilla.local/*`
 -   The file contains a valid PHP configuration files.
 -   The configuration contains the following values
     -   `Vanilla.SiteID`

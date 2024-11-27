@@ -42,7 +42,7 @@ class OrchSitesTest extends BaseSitesTestCase
      */
     public function siteProvider(): OrchSiteProvider
     {
-        $baseUrl = "https://orch.vanilla.localhost";
+        $baseUrl = "https://orch.vanilla.local";
         $orchClient = new OrchHttpClient($baseUrl, "tokenhere");
         if ($this->mockHandler === null) {
             $this->fail("Mock handler wasn't configured");
