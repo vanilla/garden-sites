@@ -22,13 +22,13 @@ class OrchClientTest extends TestCase
      */
     public function testForcedIpAddress()
     {
-        $client = new OrchHttpClient("https://orch.vanilla.localhost", "secret");
+        $client = new OrchHttpClient("https://orch.vanilla.local", "secret");
         $client->setHandler(new MockHttpHandler());
         $client->setThrowExceptions(false);
         $client->forceIpAddress("12.34.56.78");
 
         $request = $client->get("/hello")->getRequest();
         $this->assertEquals("https://12.34.56.78/hello", $request->getUrl());
-        $this->assertEquals("orch.vanilla.localhost", $request->getHeader("Host"));
+        $this->assertEquals("orch.vanilla.local", $request->getHeader("Host"));
     }
 }

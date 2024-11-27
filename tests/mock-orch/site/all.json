@@ -3,7 +3,7 @@
     "endpoint": "site/all",
     "method": "GET",
     "provider": {
-        "name": "orch.vanilla.localhost",
+        "name": "orch.vanilla.local",
         "address": "0.0.0.0",
         "version": "0.0"
     },

@@ -40,14 +40,14 @@ class LocalSitesTest extends BaseSitesTestCase
                 self::SID_CFG_PHP,
                 100,
                 "cl00000",
-                "http://dev.vanilla.localhost",
+                "http://dev.vanilla.local",
                 $commonConfig,
             ),
             self::SID_VALID => new ExpectedSite(
                 self::SID_VALID,
                 101,
                 "cl00000",
-                "http://vanilla.localhost/valid",
+                "http://vanilla.local/valid",
                 $commonConfig + [
                     "SomeArr" => [3, 4, 5],
                     "ClusterConfig.SomeKey" => "cluster1",
@@ -59,21 +59,21 @@ class LocalSitesTest extends BaseSitesTestCase
                 self::SID_NO_SYS_TOKEN,
                 101,
                 "cl00000",
-                "http://vanilla.localhost/no-system-token",
+                "http://vanilla.local/no-system-token",
                 $commonConfig,
             ))->expectNoSystemToken(),
             self::SID_E2E => new ExpectedSite(
                 self::SID_E2E,
                 102,
                 "cl00000",
-                "http://e2e-tests.vanilla.localhost/site1",
+                "http://e2e-tests.vanilla.local/site1",
                 $commonConfig,
             ),
             self::SID_OTHER_CLUSTER => new ExpectedSite(
                 self::SID_OTHER_CLUSTER,
                 105,
                 "cl00001",
-                "http://other-cluster.vanilla.localhost",
+                "http://other-cluster.vanilla.local",
                 $commonConfig + [
                     "ClusterConfig.SomeKey" => "cluster2",
                 ],
@@ -82,17 +82,17 @@ class LocalSitesTest extends BaseSitesTestCase
                 self::SID_HUB,
                 10000,
                 "cl00000",
-                "http://vanilla.localhost/hub",
+                "http://vanilla.local/hub",
                 $commonConfig + [],
-                294952213, // crc32(vanilla.localhost)
+                3913469086, // crc32(vanilla.local)
             ),
             self::SID_NODE1 => new ExpectedSite(
                 self::SID_NODE1,
                 10000,
                 "cl00000",
-                "http://vanilla.localhost/node1",
+                "http://vanilla.local/node1",
                 $commonConfig + [],
-                294952213, // crc32(vanilla.localhost)
+                3913469086, // crc32(vanilla.local)
             ),
         ];
     }
@@ -166,9 +166,9 @@ class LocalSitesTest extends BaseSitesTestCase
         $expected = <<<JSON
         {
             "siteID": 101,
-            "baseUrl": "http:\/\/vanilla.localhost\/valid",
+            "baseUrl": "http:\/\/vanilla.local\/valid",
             "clusterID": "cl00000",
-            "configPath": "\/vanilla.localhost\/valid.php"
+            "configPath": "\/vanilla.local\/valid.php"
         }
         JSON;
 

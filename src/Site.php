@@ -222,7 +222,7 @@ abstract class Site implements \JsonSerializable
 
         switch ($this->getCluster()->getRegionID()) {
             case Cluster::REGION_LOCALHOST:
-                return "http://queue.vanilla.localhost";
+                return "http://queue.vanilla.local";
             case Cluster::REGION_YUL1_DEV1:
                 return "https://yul1-vanillaqueue-dev1.v-fabric.net";
             case Cluster::REGION_YUL1_PROD1:

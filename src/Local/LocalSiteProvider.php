@@ -180,18 +180,18 @@ class LocalSiteProvider extends SiteProvider
     {
         $configPath = str_replace($this->siteConfigFsBasePath, "", $configPath);
         if (preg_match("/^\\/config.php$/", $configPath)) {
-            return "http://dev.vanilla.localhost";
-        } elseif (preg_match("/^\\/vanilla\.localhost\\/(.*)\\.php$/", $configPath, $matches)) {
+            return "http://dev.vanilla.local";
+        } elseif (preg_match("/^\\/vanilla\.local\\/(.*)\\.php$/", $configPath, $matches)) {
             $nodeName = $matches[1];
 
-            return "http://vanilla.localhost/$nodeName";
-        } elseif (preg_match("/^\\/e2e-tests\.vanilla\.localhost\\/(.*)\\.php$/", $configPath, $matches)) {
+            return "http://vanilla.local/$nodeName";
+        } elseif (preg_match("/^\\/e2e-tests\.vanilla\.local\\/(.*)\\.php$/", $configPath, $matches)) {
             $siteName = $matches[1];
 
-            return "http://e2e-tests.vanilla.localhost/$siteName";
+            return "http://e2e-tests.vanilla.local/$siteName";
         } elseif (preg_match("/^\\/([^\/]+)\.php$/", $configPath, $matches)) {
             $siteName = $matches[1];
-            return "http://{$siteName}.vanilla.localhost";
+            return "http://{$siteName}.vanilla.local";
         }
 
         return null;
