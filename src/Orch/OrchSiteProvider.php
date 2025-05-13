@@ -134,7 +134,7 @@ class OrchSiteProvider extends SiteProvider
         $clusterConfig = $this->cache->get($cacheKey, function (ItemInterface $item) use ($cluster) {
             $item->expiresAfter(60 * 5); // 5 minute cache time.
 
-            $response = $cluster->getClient()->get("/cluster/configuration");
+            $response = $cluster->getClient()->get("/cluster/configuration?refreshConfig=false");
             return $response->getBody()["configuration"] ?? [];
         });
         return $clusterConfig;
