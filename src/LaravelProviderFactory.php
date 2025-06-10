@@ -33,7 +33,7 @@ class LaravelProviderFactory
                 self::ORCH_TYPE => ["required", "in:dashboard,orchestration"],
                 self::ORCH_BASE_URL => ["required", "url"],
                 self::ORCH_USER_AGENT => ["required", "string"],
-                self::ORCH_HOSTNAME => ["string"],
+                self::ORCH_HOSTNAME => ["string", "nullable"],
                 self::ORCH_SECRET => ["required", "string"],
                 self::ORCH_REGION_IDS => ["array"],
             ],
