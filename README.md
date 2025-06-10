@@ -43,7 +43,7 @@ $cache = new RedisAdapter(/** Configuration here. */);
 // or
 $cache = new MemcachedAdapter(/** Configuration here. */);
 
-$siteProvider->setCache($cache);
+$provider->setCache($cache);
 ```
 
 ### LocalSiteProvider
@@ -86,7 +86,7 @@ The orch site provider loads sites and clusters from a remote orchestration http
 ```env
 ORCH_TYPE="orchestration"
 ORCH_BASE_URL="https://orchestration.vanilladev.com"
-ORCH_TOKEN="SECRET_HERE"
+ORCH_SECRET="SECRET_HERE"
 # Optional hostname to force for orchestration (Force Proxy from localhost)
 ORCH_HOSTNAME="ORCH_HOSTNAME";
 # CSV of region IDs to accept sites from.
@@ -104,7 +104,7 @@ The orch site provider loads sites and clusters from a remote management-dashboa
 ORCH_TYPE="dashboard"
 ORCH_BASE_URL="https://management-dashboard.vanilladev.com"
 # JWT secret for management dashboard
-ORCH_TOKEN="SECRET_HERE"
+ORCH_SECRET="SECRET_HERE"
 # Optional hostname to force for management dashboard (Force Proxy from localhost)
 ORCH_HOSTNAME="ORCH_HOSTNAME";
 # CSV of region IDs to accept sites from.

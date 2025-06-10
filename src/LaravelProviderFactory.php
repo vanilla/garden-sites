@@ -38,7 +38,7 @@ class LaravelProviderFactory
                 self::ORCH_REGION_IDS => ["array"],
             ],
             "local" => [
-                self::ORCH_TYPE => ["required", "in:dashboard,orchestration"],
+                self::ORCH_TYPE => ["required", "in:local"],
                 self::ORCH_LOCAL_DIRECTORY_PATH => ["string", "required"],
             ],
             default => throw new \Exception("Unknown orch type: $orchType"),
@@ -47,7 +47,7 @@ class LaravelProviderFactory
         return [
             self::ORCH_TYPE => $orchType,
             self::ORCH_BASE_URL => $envFunction(self::ORCH_BASE_URL),
-            self::ORCH_HOSTNAME => $envFunction(self::ORCH_HOSTNAME),
+            self::ORCH_HOSTNAME => $envFunction(self::ORCH_HOSTNAME) ?: null,
             self::ORCH_SECRET => $envFunction(self::ORCH_SECRET),
             self::ORCH_REGION_IDS => array_filter(explode(",", $envFunction("ORCH_REGION_IDS", "")), "trim"),
             self::ORCH_USER_AGENT => $envFunction(self::ORCH_USER_AGENT),
@@ -69,7 +69,7 @@ class LaravelProviderFactory
         $orchHostname = $configFunction("orch." . self::ORCH_HOSTNAME);
         $secret = $configFunction("orch." . self::ORCH_SECRET);
         $regionIDs = $configFunction("orch." . self::ORCH_REGION_IDS);
-        $userAgent = $configFunction("orch" . self::ORCH_USER_AGENT);
+        $userAgent = $configFunction("orch." . self::ORCH_USER_AGENT);
 
         $provider = match ($orchType) {
             "dashboard" => new Dashboard\DashboardSiteProvider(
@@ -79,6 +79,9 @@ class LaravelProviderFactory
             "orchestration" => new Orch\OrchSiteProvider(
                 new Clients\OrchHttpClient($orchBaseUrl, $secret, $orchHostname),
                 $regionIDs,
+            ),
+            "local" => new Local\LocalSiteProvider(
+                $configFunction("orch." . self::ORCH_LOCAL_DIRECTORY_PATH),
             ),
             default => throw new \InvalidArgumentException("Unknown orch type: $orchType"),
         };
