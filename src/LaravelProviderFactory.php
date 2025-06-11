@@ -26,7 +26,7 @@ class LaravelProviderFactory
      */
     public static function createLaravelConfigFromEnv(callable $envFunction): array
     {
-        $orchType = $envFunction(self::ORCH_TYPE);
+        $orchType = $envFunction(self::ORCH_TYPE) ?: "local";
 
         $validation = match ($orchType) {
             "dashboard", "orchestration" => [
