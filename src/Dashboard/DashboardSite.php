@@ -47,12 +47,56 @@ class DashboardSite extends Site
     public function httpClient(): SiteHttpClient
     {
         $httpClient = parent::httpClient();
-        $httpClient->setBaseUrl($this->siteRecord->getExtra("internalBaseUrl") ?? $httpClient->getBaseUrl());
-        foreach ($this->siteRecord->getExtra("internalHeaders") ?? [] as $key => $val) {
-            $httpClient->setDefaultHeader($key, $val);
-        }
+        $realHostname = $this->getRealHostName();
+        $kludgedBaseUrl = $this->replaceHostnameInUrl($this->getBaseUrl());
+        $httpClient->setBaseUrl($kludgedBaseUrl);
+        $httpClient->setDefaultHeader("Host", $realHostname);
+
+        $httpClient->addMiddleware(function (HttpRequest $request, callable $next) use (
+            $realHostname
+        ): HttpResponse {
+            $request->setUrl($this->replaceHostnameInUrl($request->getUrl()));
+            $request->setHeader("Host", $realHostname);
+            return $next($request);
+        });
 
         return $httpClient;
+    }
+
+    /**
+     * Given a url, try to replace it's base url so it routes with the cluster router.
+     *
+     * @param string $url
+     * @return string
+     */
+    public function replaceHostnameInUrl(string $url): string
+    {
+        $internalHostname = $this->getInternalHostname();
+
+        $realHostname = $this->getRealHostName();
+        $kludgedUrl = str_replace($realHostname, $internalHostname, $url);
+        $kludgedUrl = str_replace("https", "http", $kludgedUrl);
+        return $kludgedUrl;
+    }
+
+    /**
+     * @return string
+     */
+    private function getRealHostName(): string
+    {
+        $baseUrl = $this->getBaseUrl();
+        $realHostname = parse_url($baseUrl, PHP_URL_HOST);
+        return $realHostname;
+    }
+
+    /**
+     * @return string
+     */
+    private function getInternalHostname(): string
+    {
+        $internalBaseUrl = $this->siteRecord->getExtra("internalBaseUrl") ?? $this->getBaseUrl();
+        $internalHostname = parse_url($internalBaseUrl, PHP_URL_HOST);
+        return $internalHostname;
     }
 
     /**

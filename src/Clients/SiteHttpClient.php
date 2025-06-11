@@ -40,17 +40,6 @@ class SiteHttpClient extends HttpClient
     }
 
     /**
-     * If given a URL containing the siteBaseUrl, remove it.
-     * 
-     * @inheritdoc
-     */
-    public function createRequest(string $method, string $uri, $body, array $headers = [], array $options = []): \Garden\Http\HttpRequest {
-        // Replace the base url (it will get re-appended). The URL may have been on the site directly, but we actually want to use the configured internal URL.
-        $uri = str_replace($this->site->getBaseUrl(), "", $uri);
-        return parent::createRequest($method, $uri, $body, $headers, $options);
-    }
-
-    /**
      * Get a copy of the client.
      * This copy will use an access token to communicate with the site as the System user.
      *
