@@ -80,9 +80,7 @@ class LaravelProviderFactory
                 new Clients\OrchHttpClient($orchBaseUrl, $secret, $orchHostname),
                 $regionIDs,
             ),
-            "local" => new Local\LocalSiteProvider(
-                $configFunction("orch." . self::ORCH_LOCAL_DIRECTORY_PATH),
-            ),
+            "local" => new Local\LocalSiteProvider($configFunction("orch." . self::ORCH_LOCAL_DIRECTORY_PATH)),
             default => throw new \InvalidArgumentException("Unknown orch type: $orchType"),
         };
 

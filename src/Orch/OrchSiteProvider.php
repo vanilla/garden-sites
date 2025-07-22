@@ -166,7 +166,7 @@ class OrchSiteProvider extends SiteProvider
 
             // Kludge. Why isn't this injected into the site config?
             $kludgedEsSecret = $responseBody["context"]["site"]["secret"] ?? null;
-            if (!empty($kludgedEsSecret)) {
+            if (!empty($kludgedEsSecret) && !empty(ArrayUtils::getByPath("Inf.SearchApiSecret", $config, null))) {
                 ArrayUtils::setByPath("Inf.SearchApi.Secret", $config, $kludgedEsSecret);
             }
 

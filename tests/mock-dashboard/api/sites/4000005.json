@@ -7,7 +7,7 @@
         "baseUrl": "https://no-system.vanilla.community",
         "internalBaseUrl": "http://haproxy-router.yul1-routing-dev1.vanilladev.com",
         "internalHeaders": {
-            "Host": "no-system.vanillatesting.com"
+            "Host": "no-system.vanilla.community"
         },
         "name": "no-system.vanillatesting.com",
         "state": "active",
