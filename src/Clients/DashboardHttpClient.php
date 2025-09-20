@@ -28,6 +28,8 @@ class DashboardHttpClient extends HttpClient
         parent::__construct($orchBaseUrl);
         $this->setDefaultHeader("content-type", "application/json");
         $this->setThrowExceptions(true);
+        $this->setDefaultOption(HttpRequest::OPT_TIMEOUT, 10);
+        $this->setDefaultOption(HttpRequest::OPT_CONNECT_TIMEOUT, 5);
 
         if ($forcedHostname !== null) {
             HttpUtils::forceForceHostname($this, $forcedHostname);
