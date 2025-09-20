@@ -27,6 +27,7 @@ class DashboardHttpClient extends HttpClient
     {
         parent::__construct($orchBaseUrl);
         $this->setDefaultHeader("content-type", "application/json");
+        $this->setDefaultOption("timeout", 15);
         $this->setThrowExceptions(true);
 
         if ($forcedHostname !== null) {
