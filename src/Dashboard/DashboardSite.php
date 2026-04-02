@@ -10,6 +10,7 @@ use Garden\Http\HttpRequest;
 use Garden\Http\HttpResponse;
 use Garden\Sites\Clients\SiteHttpClient;
 use Garden\Sites\Cluster;
+use Garden\Sites\Exceptions\ConfigLoadingException;
 use Garden\Sites\Site;
 use Garden\Sites\SiteRecord;
 use Garden\Utils\ArrayUtils;
@@ -102,7 +103,17 @@ class DashboardSite extends Site
      */
     protected function loadSiteConfig(): array
     {
-        $siteConfig = $this->siteProvider->getSiteConfig($this->getSiteID());
+        $details = $this->siteProvider->getSiteDetails($this->getSiteID());
+        $siteConfig = $details["config"] ?? [];
+        if (empty($siteConfig)) {
+            throw new ConfigLoadingException("Dashboard failed to return a site config for site {$this->getSiteID()}");
+        }
+
+        $database = $details["site"]["database"] ?? null;
+        if ($database !== null) {
+            $siteConfig["Database"]["Host"] = $database;
+        }
+
         return $siteConfig;
     }
 }

@@ -209,6 +209,50 @@ abstract class Site implements \JsonSerializable
     }
 
     /**
+     * Get the MySQL DSN connection string for this site.
+     *
+     * @return string
+     *
+     * @throws \Exception If required database config keys are missing.
+     */
+    public function getMySqlConnectionDsn(): string
+    {
+        $host = $this->getConfigValueByKey("Database.Host");
+        $port = $this->getConfigValueByKey("Database.Port", 3306);
+        $name = $this->getConfigValueByKey("Database.Name");
+        $user = $this->getConfigValueByKey("Database.User");
+        $password = $this->getConfigValueByKey("Database.Password");
+
+        $missing = array_keys(
+            array_filter(
+                ["Database.Host" => $host, "Database.Name" => $name, "Database.User" => $user],
+                fn($v) => $v === null,
+            ),
+        );
+        if (!empty($missing)) {
+            throw new \Exception("Missing required database config keys: " . implode(", ", $missing));
+        }
+
+        return "mysql:host={$host};port={$port};dbname={$name};user={$user};password={$password}";
+    }
+
+    /**
+     * Create a MySQL PDO connection to this site's database.
+     *
+     * @param array $options Additional PDO options. See https://www.php.net/manual/en/pdo.construct.php for more information.
+     *
+     * @return \PDO
+     *
+     * @throws \Exception If required database config keys are missing.
+     */
+    public function createMySqlConnection(array $options = []): \PDO
+    {
+        $user = $this->getConfigValueByKey("Database.User");
+        $password = $this->getConfigValueByKey("Database.Password");
+        return new \PDO($this->getMySqlConnectionDsn(), $user, $password, options: $options);
+    }
+
+    /**
      * Get the hostname of the proper search service to use for the cluster.
      *
      * @return string

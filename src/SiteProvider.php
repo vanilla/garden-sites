@@ -19,7 +19,7 @@ use Symfony\Contracts\Cache\ItemInterface;
  */
 abstract class SiteProvider
 {
-    protected \Symfony\Contracts\Cache\CacheInterface $cache;
+    protected \Symfony\Component\Cache\Adapter\AdapterInterface $cache;
 
     protected string $userAgent = "vanilla-sites-package";
 
@@ -52,10 +52,10 @@ abstract class SiteProvider
     /**
      * Apply a symfony cache contract.
      *
-     * @param \Symfony\Contracts\Cache\CacheInterface $cache
+     * @param \Symfony\Component\Cache\Adapter\AdapterInterface $cache
      * @return void
      */
-    public function setCache(\Symfony\Contracts\Cache\CacheInterface $cache): void
+    public function setCache(\Symfony\Component\Cache\Adapter\AdapterInterface $cache): void
     {
         $this->cache = $cache;
     }
@@ -245,5 +245,30 @@ abstract class SiteProvider
         });
 
         return $filteredClusters;
+    }
+    
+    private function getCachedWithFallback(string $cacheKey, callable $hydrator): mixed {
+        $regularCacheKey = $cacheKey;
+        $fallbackCacheKey = "fallback.{$cacheKey}";
+        
+        
+        $regularCacheItem = $this->cache->getItem($regularCacheKey);
+        $fallbackCacheItem = $this->cache->getItem($fallbackCacheKey);
+        
+        if (!$regularCacheItem->isHit()) {
+            
+        }
+        
+        
+        try {
+            $result = $this->cache->get($regularCacheKey, function (ItemInterface $item) use ($hydrator, $fallbackCacheKey) {
+                $result = $hydrator();
+                $item->expiresAfter(60);
+
+                return $result;
+            });
+        } catch (\Throwable $ex) {
+            // We failed
+        }
     }
 }

@@ -253,6 +253,96 @@ class DashboardSitesTest extends BaseSitesTestCase
     }
 
     /**
+     * Test that the site.database field from the API response is shimmed into config as Database.Host.
+     */
+    public function testDatabaseHostShimmedFromSiteResponse(): void
+    {
+        $provider = $this->siteProvider();
+        $site = $provider->getSite(100);
+
+        $details = $provider->getSiteDetails(100);
+        $expectedHost = $details["site"]["database"];
+        $this->assertNotEmpty($expectedHost);
+        $this->assertEquals($expectedHost, $site->getConfigValueByKey("Database.Host"));
+    }
+
+    /**
+     * Test that getMySqlConnectionDsn() returns a valid DSN when all required config keys are present.
+     */
+    public function testGetMySqlConnectionDsn(): void
+    {
+        $provider = $this->siteProvider();
+        $site = $provider->getSite(100);
+
+        $details = $provider->getSiteDetails(100);
+        $expectedHost = $details["site"]["database"];
+
+        // Inject the remaining required Database config keys via the mock fixture's config.
+        // Database.Host is already shimmed from site.database. We need Name, User, and Password.
+        // We'll use a MockSite to have full control over config.
+        $mockSite = new \Garden\Sites\Mock\MockSite("https://site1.vanillatesting.com", 100, [
+            "Database" => [
+                "Host" => $expectedHost,
+                "Name" => "testdb",
+                "User" => "testuser",
+                "Password" => "testpass",
+            ],
+        ]);
+
+        $dsn = $mockSite->getMySqlConnectionDsn();
+        $this->assertEquals("mysql:host={$expectedHost};port=3306;dbname=testdb;user=testuser;password=testpass", $dsn);
+    }
+
+    /**
+     * Test that getMySqlConnectionDsn() uses a custom port when configured.
+     */
+    public function testGetMySqlConnectionDsnCustomPort(): void
+    {
+        $mockSite = new \Garden\Sites\Mock\MockSite("https://example.com", 1, [
+            "Database" => [
+                "Host" => "db1",
+                "Port" => 3307,
+                "Name" => "mydb",
+                "User" => "root",
+                "Password" => "",
+            ],
+        ]);
+
+        $dsn = $mockSite->getMySqlConnectionDsn();
+        $this->assertEquals("mysql:host=db1;port=3307;dbname=mydb;user=root;password=", $dsn);
+    }
+
+    /**
+     * Test that getMySqlConnectionDsn() throws when required config keys are missing.
+     */
+    public function testGetMySqlConnectionDsnThrowsOnMissingConfig(): void
+    {
+        $mockSite = new \Garden\Sites\Mock\MockSite("https://example.com", 1, []);
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage(
+            "Missing required database config keys: Database.Host, Database.Name, Database.User",
+        );
+        $mockSite->getMySqlConnectionDsn();
+    }
+
+    /**
+     * Test that getMySqlConnectionDsn() throws listing only the specific missing keys.
+     */
+    public function testGetMySqlConnectionDsnThrowsPartialMissing(): void
+    {
+        $mockSite = new \Garden\Sites\Mock\MockSite("https://example.com", 1, [
+            "Database" => [
+                "Host" => "db1",
+            ],
+        ]);
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage("Missing required database config keys: Database.Name, Database.User");
+        $mockSite->getMySqlConnectionDsn();
+    }
+
+    /**
      * Test that user agent is applied to our http client.
      */
     public function testUserAgent()
