@@ -8,7 +8,9 @@ namespace Garden\Sites;
 
 use Garden\Sites\Exceptions\ClusterNotFoundException;
 use Garden\Sites\Exceptions\SiteNotFoundException;
+use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
+use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 
 /**
@@ -19,7 +21,8 @@ use Symfony\Contracts\Cache\ItemInterface;
  */
 abstract class SiteProvider
 {
-    protected \Symfony\Contracts\Cache\CacheInterface $cache;
+    /** @var AdapterInterface&CacheInterface */
+    protected AdapterInterface $cache;
 
     protected string $userAgent = "vanilla-sites-package";
 
@@ -52,10 +55,10 @@ abstract class SiteProvider
     /**
      * Apply a symfony cache contract.
      *
-     * @param \Symfony\Contracts\Cache\CacheInterface $cache
+     * @param AdapterInterface&CacheInterface $cache
      * @return void
      */
-    public function setCache(\Symfony\Contracts\Cache\CacheInterface $cache): void
+    public function setCache(AdapterInterface $cache): void
     {
         $this->cache = $cache;
     }

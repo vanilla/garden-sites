@@ -7,7 +7,7 @@
 $Configuration["Vanilla"]["SiteID"] = 10001;
 $Configuration["Vanilla"]["AccountID"] = 10000;
 $Configuration["EnabledPlugins"]["sitehubshared"] = true;
-$Configuration["Context"]["Secret"] = "tokenhere";
+$Configuration["Context"]["Secret"] = "fakefakesecrettokenherefakefakesecrettokenherefakefakesecretfakefakesecret";
 $Configuration["Config1"] = "val1";
 $Configuration["Nested"]["Nested1"] = "valnested1";
 $Configuration["Nested"]["Nested2"] = "valnested2";
