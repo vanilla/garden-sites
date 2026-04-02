@@ -45,7 +45,10 @@ class DashboardSitesTest extends BaseSitesTestCase
     public function siteProvider(): DashboardSiteProvider
     {
         $baseUrl = "https://dashboard.vanilla.local";
-        $dashboardClient = new DashboardHttpClient($baseUrl, "tokenhere");
+        $dashboardClient = new DashboardHttpClient(
+            $baseUrl,
+            "fakefakesecrettokenherefakefakesecrettokenherefakefakesecretfakefakesecret",
+        );
         if ($this->mockHandler === null) {
             $this->fail("Mock handler wasn't configured");
         }

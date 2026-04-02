@@ -31,6 +31,6 @@
         "php": ">=8.0",
         "vanilla/garden-utils": "^1.0.1",
         "symfony/cache-contracts": "^2.5",
-        "firebase/php-jwt": "^7.0"
+        "firebase/php-jwt": ">=6.10"
     }
 }

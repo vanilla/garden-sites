@@ -8,7 +8,9 @@ namespace Garden\Sites;
 
 use Garden\Sites\Exceptions\ClusterNotFoundException;
 use Garden\Sites\Exceptions\SiteNotFoundException;
+use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
+use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 
 /**
@@ -19,7 +21,8 @@ use Symfony\Contracts\Cache\ItemInterface;
  */
 abstract class SiteProvider
 {
-    protected \Symfony\Component\Cache\Adapter\AdapterInterface $cache;
+    /** @var AdapterInterface&CacheInterface */
+    protected AdapterInterface $cache;
 
     protected string $userAgent = "vanilla-sites-package";
 
@@ -52,10 +55,10 @@ abstract class SiteProvider
     /**
      * Apply a symfony cache contract.
      *
-     * @param \Symfony\Component\Cache\Adapter\AdapterInterface $cache
+     * @param AdapterInterface&CacheInterface $cache
      * @return void
      */
-    public function setCache(\Symfony\Component\Cache\Adapter\AdapterInterface $cache): void
+    public function setCache(AdapterInterface $cache): void
     {
         $this->cache = $cache;
     }
@@ -245,30 +248,5 @@ abstract class SiteProvider
         });
 
         return $filteredClusters;
-    }
-    
-    private function getCachedWithFallback(string $cacheKey, callable $hydrator): mixed {
-        $regularCacheKey = $cacheKey;
-        $fallbackCacheKey = "fallback.{$cacheKey}";
-        
-        
-        $regularCacheItem = $this->cache->getItem($regularCacheKey);
-        $fallbackCacheItem = $this->cache->getItem($fallbackCacheKey);
-        
-        if (!$regularCacheItem->isHit()) {
-            
-        }
-        
-        
-        try {
-            $result = $this->cache->get($regularCacheKey, function (ItemInterface $item) use ($hydrator, $fallbackCacheKey) {
-                $result = $hydrator();
-                $item->expiresAfter(60);
-
-                return $result;
-            });
-        } catch (\Throwable $ex) {
-            // We failed
-        }
     }
 }
