@@ -10,6 +10,7 @@
             "Host": "site1.vanillatesting.com"
         },
         "name": "site1.vanillatesting.com",
+        "domain": null,
         "state": "active",
         "database": "dbe1",
         "multisiteID": null
@@ -25,6 +26,7 @@
             "Host": "test.vanilla.community"
         },
         "name": "test-hub.vanillatesting.com",
+        "domain": "test.vanilla.community",
         "state": "active",
         "database": "db1",
         "multisiteID": 100
@@ -40,6 +42,7 @@
             "Host": "test.vanilla.community"
         },
         "name": "test-node1.vanillatesting.com",
+        "domain": "test.vanilla.community",
         "state": "active",
         "database": "db1",
         "multisiteID": 100
@@ -55,6 +58,7 @@
             "Host": "no-system.vanillatesting.com"
         },
         "name": "no-system.vanillatesting.com",
+        "domain": "no-system.vanilla.community",
         "state": "active",
         "database": "db1",
         "multisiteID": null

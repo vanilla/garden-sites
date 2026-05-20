@@ -60,7 +60,7 @@ class LocalSiteProvider extends SiteProvider
 
         $siteRecordsBySiteID = [];
         foreach ($configPaths as $configPath) {
-            $baseUrl = $this->domainForConfigPath($configPath);
+            $baseUrl = $this->baseUrlForConfigPath($configPath);
             if ($baseUrl === null) {
                 continue;
             }
@@ -84,7 +84,16 @@ class LocalSiteProvider extends SiteProvider
                     $multisiteID = null;
                 }
 
-                $siteRecord = new SiteRecord($siteID, $accountID, $multisiteID, $clusterID, $baseUrl);
+                $nameAndDomain = SiteRecord::deriveNameAndDomainFromBaseUrl($baseUrl);
+                $siteRecord = new SiteRecord(
+                    $siteID,
+                    $accountID,
+                    $multisiteID,
+                    $clusterID,
+                    $baseUrl,
+                    $nameAndDomain["name"],
+                    $nameAndDomain["domain"],
+                );
                 $configPath = str_replace($this->siteConfigFsBasePath, "", $configPath);
                 $siteRecord->setExtra("configPath", $configPath);
 
@@ -176,7 +185,7 @@ class LocalSiteProvider extends SiteProvider
      * @param string $configPath
      * @return string|null
      */
-    private function domainForConfigPath(string $configPath): ?string
+    private function baseUrlForConfigPath(string $configPath): ?string
     {
         $configPath = str_replace($this->siteConfigFsBasePath, "", $configPath);
         if (preg_match("/^\\/config.php$/", $configPath)) {

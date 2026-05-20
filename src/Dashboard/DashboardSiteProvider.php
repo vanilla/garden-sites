@@ -69,6 +69,8 @@ class DashboardSiteProvider extends SiteProvider
                 $apiSite["multisiteID"],
                 $apiSite["clusterID"],
                 $apiSite["baseUrl"],
+                $apiSite["name"],
+                $apiSite["domain"] ?? null,
             );
             $site->setExtra("internalBaseUrl", $apiSite["internalBaseUrl"]);
             $site->setExtra("internalHeaders", $apiSite["internalHeaders"]);

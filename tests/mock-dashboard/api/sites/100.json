@@ -10,6 +10,7 @@
             "Host": "site1.vanillatesting.com"
         },
         "name": "site1.vanillatesting.com",
+        "domain": null,
         "state": "active",
         "database": "dbe1"
     },

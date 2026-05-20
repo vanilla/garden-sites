@@ -10,6 +10,7 @@
             "Host": "ams1.vanilla.community"
         },
         "name": "ams1.vanillatesting.com",
+        "domain": "ams1.vanilla.community",
         "state": "active",
         "database": "db1",
         "multisiteID": null

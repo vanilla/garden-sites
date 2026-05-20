@@ -27,19 +27,60 @@ class SiteRecord implements \JsonSerializable
 
     private string $baseUrl;
 
+    private string $name;
+
+    private ?string $domain;
+
     /**
      * @param int $siteID
      * @param int $accountID
      * @param string $clusterID
      * @param string $baseUrl
+     * @param string $name
+     * @param string|null $domain
      */
-    public function __construct(int $siteID, int $accountID, ?int $multisiteID, string $clusterID, string $baseUrl)
-    {
+    public function __construct(
+        int $siteID,
+        int $accountID,
+        ?int $multisiteID,
+        string $clusterID,
+        string $baseUrl,
+        string $name,
+        ?string $domain = null
+    ) {
         $this->siteID = $siteID;
         $this->accountID = $accountID;
         $this->multisiteID = $multisiteID;
         $this->clusterID = $clusterID;
         $this->baseUrl = $baseUrl;
+        $this->name = $name;
+        $this->domain = $domain;
+    }
+
+    /**
+     * Derive a site name and domain from a base URL.
+     *
+     * Sites without a path segment use the host as the name with a null domain.
+     * Path-based sites use the host as the domain and a multi-{path} name.
+     *
+     * @return array{name: string, domain: string|null}
+     */
+    public static function deriveNameAndDomainFromBaseUrl(string $baseUrl): array
+    {
+        $host = parse_url($baseUrl, PHP_URL_HOST);
+        $path = trim(parse_url($baseUrl, PHP_URL_PATH) ?? "", "/");
+
+        if ($path === "") {
+            return [
+                "name" => $host,
+                "domain" => null,
+            ];
+        }
+
+        return [
+            "name" => "multi-{$path}.{$host}",
+            "domain" => $host,
+        ];
     }
 
     /**
@@ -92,6 +133,22 @@ class SiteRecord implements \JsonSerializable
     }
 
     /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getDomain(): ?string
+    {
+        return $this->domain;
+    }
+
+    /**
      * @return UriInterface
      */
     public function getBaseUri(): UriInterface
@@ -133,6 +190,8 @@ class SiteRecord implements \JsonSerializable
             "siteID" => $this->getSiteID(),
             "baseUrl" => $this->getBaseUrl(),
             "clusterID" => $this->getClusterID(),
+            "name" => $this->getName(),
+            "domain" => $this->getDomain(),
         ] + $this->extra;
     }
 }

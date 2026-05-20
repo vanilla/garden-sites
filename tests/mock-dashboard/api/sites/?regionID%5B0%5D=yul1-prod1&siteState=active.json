@@ -10,6 +10,7 @@
             "Host": "yul1.vanilla.community"
         },
         "name": "yul1.vanillatesting.com",
+        "domain": "yul1.vanilla.community",
         "state": "active",
         "database": "db1",
         "multisiteID": null

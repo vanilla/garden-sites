@@ -115,6 +115,22 @@ abstract class Site implements \JsonSerializable
     }
 
     /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->siteRecord->getName();
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getDomain(): ?string
+    {
+        return $this->siteRecord->getDomain();
+    }
+
+    /**
      * Clear the local config cache.
      *
      * @return void

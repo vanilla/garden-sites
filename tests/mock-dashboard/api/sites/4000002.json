@@ -10,6 +10,7 @@
             "Host": "test.vanilla.community"
         },
         "name": "test-node1.vanillatesting.com",
+        "domain": "test.vanilla.community",
         "state": "active",
         "database": "db1",
         "multisiteID": 100
