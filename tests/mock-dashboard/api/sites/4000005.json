@@ -10,6 +10,7 @@
             "Host": "no-system.vanilla.community"
         },
         "name": "no-system.vanillatesting.com",
+        "domain": "no-system.vanilla.community",
         "state": "active",
         "database": "db1",
         "multisiteID": null

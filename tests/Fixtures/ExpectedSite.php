@@ -28,6 +28,9 @@ class ExpectedSite extends SiteRecord
      * @param string $clusterID
      * @param string $baseUrl
      * @param array $expectedConfigs
+     * @param int|null $multisiteID
+     * @param string|null $name
+     * @param string|null $domain
      */
     public function __construct(
         int $siteID,
@@ -35,9 +38,16 @@ class ExpectedSite extends SiteRecord
         string $clusterID,
         string $baseUrl,
         array $expectedConfigs,
-        ?int $multisiteID = null
+        ?int $multisiteID = null,
+        ?string $name = null,
+        ?string $domain = null
     ) {
-        parent::__construct($siteID, $accountID, $multisiteID, $clusterID, $baseUrl);
+        if ($name === null) {
+            $nameAndDomain = SiteRecord::deriveNameAndDomainFromBaseUrl($baseUrl);
+            $name = $nameAndDomain["name"];
+            $domain = $nameAndDomain["domain"];
+        }
+        parent::__construct($siteID, $accountID, $multisiteID, $clusterID, $baseUrl, $name, $domain);
         $this->expectedConfigs = $expectedConfigs;
     }
 
@@ -72,6 +82,8 @@ class ExpectedSite extends SiteRecord
         TestCase::assertEquals($this->getClusterID(), $site->getClusterID(), "Expected clusterID {$suffix}.");
         TestCase::assertEquals($this->getBaseUrl(), $site->getBaseUrl(), "Expected baseUrl {$suffix}.");
         TestCase::assertEquals($this->getMultisiteID(), $site->getMultisiteID(), "Expected multisiteID {$suffix}.");
+        TestCase::assertEquals($this->getName(), $site->getName(), "Expected name {$suffix}.");
+        TestCase::assertEquals($this->getDomain(), $site->getDomain(), "Expected domain {$suffix}.");
     }
 
     /**

@@ -119,6 +119,9 @@ class DashboardSitesTest extends BaseSitesTestCase
                 "cl10001",
                 "https://site1.vanillatesting.com",
                 $commonConfigs,
+                null,
+                "site1.vanillatesting.com",
+                null,
             ))->expectRegion(Cluster::REGION_YUL1_DEV1),
             4000001 => (new ExpectedSite(
                 4000001,
@@ -127,6 +130,8 @@ class DashboardSitesTest extends BaseSitesTestCase
                 "https://test.vanilla.community/hub",
                 $commonConfigs,
                 100,
+                "test-hub.vanillatesting.com",
+                "test.vanilla.community",
             ))->expectRegion(Cluster::REGION_YUL1_DEV1),
 
             4000002 => (new ExpectedSite(
@@ -136,6 +141,8 @@ class DashboardSitesTest extends BaseSitesTestCase
                 "https://test.vanilla.community/node1",
                 $commonConfigs,
                 100,
+                "test-node1.vanillatesting.com",
+                "test.vanilla.community",
             ))->expectRegion(Cluster::REGION_YUL1_DEV1),
             4000003 => (new ExpectedSite(
                 4000003,
@@ -143,6 +150,9 @@ class DashboardSitesTest extends BaseSitesTestCase
                 "cl40011",
                 "https://yul1.vanilla.community",
                 $commonConfigs,
+                null,
+                "yul1.vanillatesting.com",
+                "yul1.vanilla.community",
             ))->expectRegion(Cluster::REGION_YUL1_PROD1),
             4000004 => (new ExpectedSite(
                 4000004,
@@ -150,6 +160,9 @@ class DashboardSitesTest extends BaseSitesTestCase
                 "cl40015",
                 "https://ams1.vanilla.community",
                 $commonConfigs,
+                null,
+                "ams1.vanillatesting.com",
+                "ams1.vanilla.community",
             ))->expectRegion(Cluster::REGION_AMS1_PROD1),
             4000005 => (new ExpectedSite(
                 4000005,
@@ -157,6 +170,9 @@ class DashboardSitesTest extends BaseSitesTestCase
                 "cl10001",
                 "https://no-system.vanilla.community",
                 $commonConfigs,
+                null,
+                "no-system.vanillatesting.com",
+                "no-system.vanilla.community",
             ))
                 ->expectNoSystemToken()
                 ->expectRegion(Cluster::REGION_YUL1_DEV1),

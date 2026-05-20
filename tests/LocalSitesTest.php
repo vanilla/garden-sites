@@ -168,6 +168,8 @@ class LocalSitesTest extends BaseSitesTestCase
             "siteID": 101,
             "baseUrl": "http:\/\/vanilla.local\/valid",
             "clusterID": "cl00000",
+            "name": "multi-valid.vanilla.local",
+            "domain": "vanilla.local",
             "configPath": "\/vanilla.local\/valid.php"
         }
         JSON;

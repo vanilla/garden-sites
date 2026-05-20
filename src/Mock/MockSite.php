@@ -49,7 +49,16 @@ class MockSite extends Site
     ) {
         $this->baseUrl = $baseUrl;
         $this->config = $config;
-        $siteRecord = new SiteRecord($siteID, $accountID, $multisiteID, $clusterID, $baseUrl);
+        $nameAndDomain = SiteRecord::deriveNameAndDomainFromBaseUrl($baseUrl);
+        $siteRecord = new SiteRecord(
+            $siteID,
+            $accountID,
+            $multisiteID,
+            $clusterID,
+            $baseUrl,
+            $nameAndDomain["name"],
+            $nameAndDomain["domain"],
+        );
         parent::__construct($siteRecord, new MockSiteProvider());
         $this->generateKey();
         $this->setSystemToken("test123");

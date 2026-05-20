@@ -59,6 +59,8 @@ class OrchSiteProvider extends SiteProvider
                 $apiSite["multisiteid"],
                 $apiSite["cluster"],
                 "https://" . $apiSite["baseurl"],
+                $apiSite["name"],
+                $apiSite["domain"] ?? null,
             );
             $siteRecordsBySiteID[$site->getSiteID()] = $site;
         }
