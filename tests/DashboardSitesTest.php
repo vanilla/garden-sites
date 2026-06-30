@@ -282,7 +282,7 @@ class DashboardSitesTest extends BaseSitesTestCase
         $details = $provider->getSiteDetails(100);
         $expectedHost = $details["site"]["database"];
         $this->assertNotEmpty($expectedHost);
-        $this->assertEquals($expectedHost, $site->getConfigValueByKey("Database.Host"));
+        $this->assertEquals("dbe1.cl10001.yul1-dev1.vanillaforums.net", $site->getConfigValueByKey("Database.Host"));
     }
 
     /**
