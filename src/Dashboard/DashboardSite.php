@@ -111,7 +111,7 @@ class DashboardSite extends Site
 
         $database = $details["site"]["database"] ?? null;
         $regionID = $this->getCluster()->getRegionID();
-        if ($database !== null && $regionID !== null) {
+        if ($database !== null) {
             $regionSuffix = match ($regionID) {
                 "aws-devlegacy-us-e2" => "vanillafabric.net",
                 default => "vanillaforums.net",
