@@ -110,8 +110,14 @@ class DashboardSite extends Site
         }
 
         $database = $details["site"]["database"] ?? null;
-        if ($database !== null) {
-            $siteConfig["Database"]["Host"] = $database;
+        $regionID = $this->getCluster()->getRegionID();
+        if ($database !== null && $regionID !== null) {
+            $regionSuffix = match ($regionID) {
+                "aws-devlegacy-us-e2" => "vanillafabric.net",
+                default => "vanillaforums.net",
+            };
+
+            $siteConfig["Database"]["Host"] = "{$database}.{$this->getClusterID()}.{$regionID}.{$regionSuffix}";
         }
 
         return $siteConfig;
