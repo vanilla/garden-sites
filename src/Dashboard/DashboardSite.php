@@ -51,11 +51,18 @@ class DashboardSite extends Site
         $realHostname = $this->getRealHostName();
         $kludgedBaseUrl = $this->replaceHostnameInUrl($this->getBaseUrl());
         $httpClient->setBaseUrl($kludgedBaseUrl);
-        $httpClient->setDefaultHeader("Host", $realHostname);
 
         $httpClient->addMiddleware(function (HttpRequest $request, callable $next) use ($realHostname): HttpResponse {
-            $request->setUrl($this->replaceHostnameInUrl($request->getUrl()));
-            $request->setHeader("Host", $realHostname);
+            $requestHostname = $request->getUri()->getHost();
+            if ($requestHostname === $realHostname) {
+                $request->setUrl($this->replaceHostnameInUrl($request->getUrl()));
+                $requestHostname = $request->getUri()->getHost();
+            }
+
+            if ($requestHostname === $this->getInternalHostname()) {
+                $request->setHeader("Host", $realHostname);
+            }
+
             return $next($request);
         });
 

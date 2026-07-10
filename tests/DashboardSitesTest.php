@@ -389,4 +389,39 @@ class DashboardSitesTest extends BaseSitesTestCase
                 ->getHeader("user-agent"),
         );
     }
+
+    /**
+     * Test that our HTTP client properly applies internal networking.
+     *
+     * @return void
+     */
+    public function testSiteClientUsesInternalNetworking(): void
+    {
+        $provider = $this->siteProvider();
+        $site = $provider->getSite(100);
+        $siteClient = $site->httpClient();
+        $siteClient->setThrowExceptions(false);
+        $actualHostname = "site1.vanillatesting.com";
+
+        // With a raw path, we use internal networking.
+        $response = $siteClient->get("/hello-world", [], [], ["throw" => false]);
+        $this->assertEquals(
+            "http://haproxy-router.yul1-routing-dev1.vanilladev.com/hello-world",
+            $response->getRequest()->getUrl(),
+        );
+        $this->assertEquals($actualHostname, $response->getRequest()->getHeader("Host"));
+
+        // With a full site url, we still use internal networking.
+        $response = $siteClient->get("https://{$actualHostname}/hello-world", [], [], ["throw" => false]);
+        $this->assertEquals(
+            "http://haproxy-router.yul1-routing-dev1.vanilladev.com/hello-world",
+            $response->getRequest()->getUrl(),
+        );
+        $this->assertEquals($actualHostname, $response->getRequest()->getHeader("Host"));
+
+        // With a non-site URL, we use the actual hostname, no internal networking.
+        $response = $siteClient->get("https://example.com/hello-world", [], [], ["throw" => false]);
+        $this->assertEquals("https://example.com/hello-world", $response->getRequest()->getUrl());
+        $this->assertEquals("", $response->getRequest()->getHeader("Host"));
+    }
 }
