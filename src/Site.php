@@ -184,10 +184,12 @@ abstract class Site implements \JsonSerializable
     public function getConfigValueByKey(string $configKey, mixed $fallback = null): mixed
     {
         $this->ensureConfigLoaded();
+        $config = $this->configCache ?? [];
+        $secrets = $this->secretsCache ?? [];
 
         $sentinel = new \stdClass();
-        $configValue = ArrayUtils::getByPath($configKey, $this->configCache, $sentinel);
-        $secretValue = ArrayUtils::getByPath($configKey, $this->secretsCache, $sentinel);
+        $configValue = ArrayUtils::getByPath($configKey, $config, $sentinel);
+        $secretValue = ArrayUtils::getByPath($configKey, $secrets, $sentinel);
         $hasConfig = $configValue !== $sentinel;
         $hasSecret = $secretValue !== $sentinel;
 
@@ -214,8 +216,9 @@ abstract class Site implements \JsonSerializable
     public function getSecret(string $configKey, mixed $fallback = null): mixed
     {
         $this->ensureConfigLoaded();
+        $secrets = $this->secretsCache ?? [];
 
-        return ArrayUtils::getByPath($configKey, $this->secretsCache, $fallback);
+        return ArrayUtils::getByPath($configKey, $secrets, $fallback);
     }
 
     /**

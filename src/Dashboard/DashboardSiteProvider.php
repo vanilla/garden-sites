@@ -147,7 +147,7 @@ class DashboardSiteProvider extends SiteProvider
      *
      * @param int $siteID The siteID.
      *
-     * @return array{config: array, site: array, systemAccessToken: string} The config.
+     * @return array{config: array, site: array, systemAccessToken: string, secrets?: array} The config.
      */
     public function getSiteDetails(int $siteID): array
     {
