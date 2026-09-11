@@ -18,6 +18,23 @@
     "config": {
         "allsite": {
             "havethis": "everyone"
+        },
+        "Garden": {
+            "Title": "My Forum",
+            "Cookie": {
+                "Name": "Vanilla"
+            }
+        }
+    },
+    "secrets": {
+        "Context": {
+            "Secret": "site-secret"
+        },
+        "Garden": {
+            "Cookie": {
+                "Salt": "cookie-salt",
+                "Name": "secret-cookie-name"
+            }
         }
     }
 }

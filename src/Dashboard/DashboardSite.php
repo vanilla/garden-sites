@@ -129,4 +129,13 @@ class DashboardSite extends Site
 
         return $siteConfig;
     }
+
+    /**
+     * @inheritDoc
+     */
+    protected function loadSiteSecrets(): array
+    {
+        $details = $this->siteProvider->getSiteDetails($this->getSiteID());
+        return $details["secrets"] ?? [];
+    }
 }
