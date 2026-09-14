@@ -37,6 +37,9 @@ abstract class Site implements \JsonSerializable
     /** @var array|null */
     protected ?array $configCache = null;
 
+    /** @var array|null */
+    protected ?array $secretsCache = null;
+
     /**
      * @param SiteRecord $siteRecord
      * @param SiteProvider<TSite, TCluster> $siteProvider
@@ -54,6 +57,18 @@ abstract class Site implements \JsonSerializable
      * @return array<string, mixed>
      */
     abstract protected function loadSiteConfig(): array;
+
+    /**
+     * Return a nested array of the site's secrets.
+     *
+     * Providers that do not split secrets from config should leave this empty.
+     *
+     * @return array<string, mixed>
+     */
+    protected function loadSiteSecrets(): array
+    {
+        return [];
+    }
 
     /**
      * Get a site's ID.
@@ -138,10 +153,29 @@ abstract class Site implements \JsonSerializable
     public function clearConfigCache(): void
     {
         $this->configCache = null;
+        $this->secretsCache = null;
+    }
+
+    /**
+     * Lazy-load config and secrets caches.
+     *
+     * @return void
+     */
+    private function ensureConfigLoaded(): void
+    {
+        if ($this->configCache === null) {
+            $this->configCache = $this->loadSiteConfig();
+        }
+        if ($this->secretsCache === null) {
+            $this->secretsCache = $this->loadSiteSecrets();
+        }
     }
 
     /**
      * Get a site's config value by key.
+     *
+     * Looks up both config and secrets. If both values are arrays they are merged
+     * with secrets winning on conflicts. A scalar secret wins outright.
      *
      * @param string $configKey Dot notation config key.
      * @param mixed|null $fallback Fallback value.
@@ -149,12 +183,42 @@ abstract class Site implements \JsonSerializable
      */
     public function getConfigValueByKey(string $configKey, mixed $fallback = null): mixed
     {
-        if ($this->configCache === null) {
-            $this->configCache = $this->loadSiteConfig();
+        $this->ensureConfigLoaded();
+        $config = $this->configCache ?? [];
+        $secrets = $this->secretsCache ?? [];
+
+        $sentinel = new \stdClass();
+        $configValue = ArrayUtils::getByPath($configKey, $config, $sentinel);
+        $secretValue = ArrayUtils::getByPath($configKey, $secrets, $sentinel);
+        $hasConfig = $configValue !== $sentinel;
+        $hasSecret = $secretValue !== $sentinel;
+
+        if ($hasSecret && $hasConfig && is_array($secretValue) && is_array($configValue)) {
+            return ArrayUtils::mergeRecursive($configValue, $secretValue, fn($a, $b) => $b);
         }
 
-        $result = ArrayUtils::getByPath($configKey, $this->configCache, $fallback);
-        return $result;
+        if ($hasSecret) {
+            return $secretValue;
+        }
+
+        return $hasConfig ? $configValue : $fallback;
+    }
+
+    /**
+     * Get a value from the secrets store only.
+     *
+     * Does not fall back to config or merge parent keys.
+     *
+     * @param string $configKey Dot notation config key.
+     * @param mixed|null $fallback Fallback value.
+     * @return mixed
+     */
+    public function getSecret(string $configKey, mixed $fallback = null): mixed
+    {
+        $this->ensureConfigLoaded();
+        $secrets = $this->secretsCache ?? [];
+
+        return ArrayUtils::getByPath($configKey, $secrets, $fallback);
     }
 
     /**

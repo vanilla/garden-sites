@@ -424,4 +424,75 @@ class DashboardSitesTest extends BaseSitesTestCase
         $this->assertEquals("https://example.com/hello-world", $response->getRequest()->getUrl());
         $this->assertEquals("", $response->getRequest()->getHeader("Host"));
     }
+
+    /**
+     * Test that getConfigValueByKey() falls back to secrets and merges parent keys.
+     *
+     * @return void
+     */
+    public function testConfigValueFallsBackToSecrets(): void
+    {
+        $provider = $this->siteProvider();
+        $site = $provider->getSite(100);
+
+        $this->assertEquals("everyone", $site->getConfigValueByKey("allsite.havethis"));
+        $this->assertEquals("My Forum", $site->getConfigValueByKey("Garden.Title"));
+        $this->assertEquals("site-secret", $site->getConfigValueByKey("Context.Secret"));
+        $this->assertEquals("cookie-salt", $site->getConfigValueByKey("Garden.Cookie.Salt"));
+        $this->assertEquals("secret-cookie-name", $site->getConfigValueByKey("Garden.Cookie.Name"));
+        $this->assertEquals(
+            [
+                "Title" => "My Forum",
+                "Cookie" => [
+                    "Name" => "secret-cookie-name",
+                    "Salt" => "cookie-salt",
+                ],
+            ],
+            $site->getConfigValueByKey("Garden"),
+        );
+        $this->assertSame("missing", $site->getConfigValueByKey("Does.Not.Exist", "missing"));
+    }
+
+    /**
+     * Test that getSecret() reads only the secrets store.
+     *
+     * @return void
+     */
+    public function testGetSecretReadsSecretsOnly(): void
+    {
+        $provider = $this->siteProvider();
+        $site = $provider->getSite(100);
+
+        $this->assertEquals("site-secret", $site->getSecret("Context.Secret"));
+        $this->assertEquals("cookie-salt", $site->getSecret("Garden.Cookie.Salt"));
+        $this->assertEquals("secret-cookie-name", $site->getSecret("Garden.Cookie.Name"));
+        $this->assertSame("missing", $site->getSecret("allsite.havethis", "missing"));
+        $this->assertSame("missing", $site->getSecret("Garden.Title", "missing"));
+        $this->assertEquals(
+            [
+                "Cookie" => [
+                    "Salt" => "cookie-salt",
+                    "Name" => "secret-cookie-name",
+                ],
+            ],
+            $site->getSecret("Garden"),
+        );
+    }
+
+    /**
+     * Test that getSiteConfig() still returns the config payload without secrets.
+     *
+     * @return void
+     */
+    public function testGetSiteConfigExcludesSecrets(): void
+    {
+        $provider = $this->siteProvider();
+        $config = $provider->getSiteConfig(100);
+
+        $this->assertEquals("everyone", $config["allsite"]["havethis"]);
+        $this->assertEquals("My Forum", $config["Garden"]["Title"]);
+        $this->assertEquals("Vanilla", $config["Garden"]["Cookie"]["Name"]);
+        $this->assertArrayNotHasKey("Context", $config);
+        $this->assertArrayNotHasKey("Salt", $config["Garden"]["Cookie"]);
+    }
 }
